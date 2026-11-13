@@ -33,4 +33,4 @@ Acheter/transférer le domaine sur Cloudflare, puis dans l'env du mariage :
 
 ## Développement local
 `echo ADMIN_PASSWORD=test > .dev.vars && npx wrangler d1 migrations apply mariage-local --local && npx wrangler dev`
-(`--var WEDDING_SLUG:aubrilha` pour un autre mariage)
+(`--var WEDDING_SLUG:paul-caroline-wedding` pour un autre mariage)

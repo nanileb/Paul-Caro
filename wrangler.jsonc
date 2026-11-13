@@ -18,11 +18,11 @@
       "d1_databases": [{ "binding": "DB", "database_name": "mariage-pauline-benjamin", "database_id": "A_REMPLIR", "migrations_dir": "migrations" }]
       // Domaine payant plus tard : "routes": [{ "pattern": "exemple.fr", "custom_domain": true }]
     },
-    // Mariage Aubrilha
-    "aubrilha": {
-      "name": "mariage-aubrilha",
-      "vars": { "WEDDING_SLUG": "aubrilha" },
-      "d1_databases": [{ "binding": "DB", "database_name": "mariage-aubrilha", "database_id": "A_REMPLIR", "migrations_dir": "migrations" }]
+    // Paul & Caroline - Wedding
+    "paul-caroline-wedding": {
+      "name": "paul-caroline-wedding",
+      "vars": { "WEDDING_SLUG": "paul-caroline-wedding" },
+      "d1_databases": [{ "binding": "DB", "database_name": "paul-caroline-wedding", "database_id": "A_REMPLIR", "migrations_dir": "migrations" }]
       // Domaine payant plus tard : "routes": [{ "pattern": "exemple.fr", "custom_domain": true }]
     },
     // Ethan & Julia

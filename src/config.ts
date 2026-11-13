@@ -90,14 +90,14 @@ export type WeddingConfig = {
   footerNote?: string
 }
 
-import aubrilha from '../weddings/aubrilha.json'
+import paulCaroline from '../weddings/paul-caroline-wedding.json'
 import emmaGab from '../weddings/emma-gab.json'
 import ethanJulia from '../weddings/ethan-julia.json'
 import mariePaul from '../weddings/marie-paul.json'
 import paulineBenjamin from '../weddings/pauline-benjamin.json'
 
 export const weddings: Record<string, WeddingConfig> = Object.fromEntries(
-  [paulineBenjamin, aubrilha, ethanJulia, mariePaul, emmaGab].map((w) => [w.slug, w as WeddingConfig]),
+  [paulineBenjamin, paulCaroline, ethanJulia, mariePaul, emmaGab].map((w) => [w.slug, w as WeddingConfig]),
 )
 
 export function getWedding(slug: string): WeddingConfig {
