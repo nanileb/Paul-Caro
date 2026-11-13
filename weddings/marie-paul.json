@@ -1,0 +1,48 @@
+{
+  "slug": "marie-paul",
+  "partner1": "Marie",
+  "partner2": "Paul",
+  "monogram": "M & P",
+  "dateISO": "2026-09-19T16:00:00+02:00",
+  "dateLabel": "19 septembre 2026",
+  "place": "L'Isle-sur-la-Sorgue — Provence",
+  "seo": { "title": "Marie & Paul — 19 septembre 2026", "description": "Marie & Paul se marient le 19 septembre 2026 au Mas des Lavandes, L'Isle-sur-la-Sorgue. Confirmez votre présence." },
+  "theme": {
+    "background": "#0C0A08", "surface": "#16130F", "text": "#F1E9DA", "primary": "#F0BD3A", "accent": "#F0BD3A", "heroText": "#F1E9DA",
+    "fontTitle": "Cormorant Garamond", "fontBody": "Inter",
+    "overlay": "linear-gradient(180deg, rgba(12,10,8,0.55), rgba(12,10,8,0.85))"
+  },
+  "media": {
+    "splashVideo": "https://media.base44.com/videos/public/6a74634c9d37ddb4be09814c/02de3b39f_6e0952abc155ccedc9cc3f91d186ee2a.mp4",
+    "heroVideo": "https://media.base44.com/videos/public/6a74634c9d37ddb4be09814c/02de3b39f_6e0952abc155ccedc9cc3f91d186ee2a.mp4",
+    "music": [
+      "https://media.base44.com/files/public/6a73b2e5265ee0fc3f8abb37/9de55d7aa_SayYesToHeaven.mp3",
+      "https://media.base44.com/files/public/6a73b2e5265ee0fc3f8abb37/9d1e1f958_EVERYTHINGHALLELUJAH.mp3",
+      "https://media.base44.com/files/public/6a73b2e5265ee0fc3f8abb37/4f33a2f22_Hallelujah.mp3"
+    ]
+  },
+  "splash": { "enabled": true, "kicker": "Bienvenue", "text": "Bienvenue au mariage de Marie & Paul" },
+  "hero": { "cta": "Confirmer ma présence" },
+  "events": [
+    { "key": "ceremonie", "title": "Cérémonie laïque", "day": "Samedi 19 septembre 2026", "time": "16h00", "icon": "heart", "venue": "mas" },
+    { "key": "cocktail", "title": "Cocktail", "day": "Samedi 19 septembre 2026", "time": "17h30", "icon": "glass", "venue": "mas" },
+    { "key": "diner", "title": "Dîner", "day": "Samedi 19 septembre 2026", "time": "20h00", "icon": "food", "venue": "mas" },
+    { "key": "soiree", "title": "Soirée dansante", "day": "Samedi 19 septembre 2026", "time": "22h30", "icon": "music", "venue": "mas" }
+  ],
+  "programme": { "title": "Déroulé de la journée" },
+  "venues": [
+    { "key": "mas", "label": "Le lieu", "name": "Mas des Lavandes", "address": "Route de Cavaillon, 84800 L'Isle-sur-la-Sorgue", "description": "Domaine provençal au cœur de la Sorgue, entre vignes et lavandes. La cérémonie et le cocktail se tiendront en plein air, le dîner et la soirée dans la salle du mas. Parking gratuit sur place." }
+  ],
+  "hotels": [
+    { "name": "Hôtel du Parc", "place": "L'Isle-sur-la-Sorgue", "text": "À dix minutes à pied du Mas des Lavandes, au cœur du centre historique." },
+    { "name": "La Bastide Bleue", "place": "Gordes", "text": "Bastide provençale perchée, à vingt minutes de route du lieu de réception." }
+  ],
+  "hotelsNote": "Pensez à réserver tôt — mentionnez le mariage Marie & Paul.",
+  "faq": [
+    { "q": "Les enfants sont-ils les bienvenus ?", "a": "Oui, avec grand plaisir." },
+    { "q": "Y a-t-il un parking sur place ?", "a": "Oui, un parking gratuit est à disposition." },
+    { "q": "À quelle heure se termine la soirée ?", "a": "La soirée se terminera vers 3h du matin." },
+    { "q": "Avant quelle date faut-il répondre ?", "a": "Merci de confirmer votre présence avant le 1er juillet 2026." }
+  ],
+  "rsvp": { "deadlineLabel": "1er juillet 2026", "perEvent": false, "askEmail": true, "askCompanions": true, "askDietary": true, "maxPersons": 20, "thanks": "Nous avons hâte de vous retrouver le 19 septembre." }
+}

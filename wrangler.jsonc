@@ -1,0 +1,50 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  // Un Worker + une base D1 par mariage. Déploiement : npx wrangler deploy --env <slug>
+  // Sans --env (dev local) : le site de Pauline & Benjamin.
+  "name": "mariage-pauline-benjamin",
+  "main": "src/index.tsx",
+  "compatibility_date": "2026-10-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": true,
+  "observability": { "enabled": true },
+  "vars": { "WEDDING_SLUG": "pauline-benjamin" },
+  "d1_databases": [{ "binding": "DB", "database_name": "mariage-local", "database_id": "local", "migrations_dir": "migrations" }],
+  "env": {
+    // Pauline & Benjamin
+    "pauline-benjamin": {
+      "name": "mariage-pauline-benjamin",
+      "vars": { "WEDDING_SLUG": "pauline-benjamin" },
+      "d1_databases": [{ "binding": "DB", "database_name": "mariage-pauline-benjamin", "database_id": "A_REMPLIR", "migrations_dir": "migrations" }]
+      // Domaine payant plus tard : "routes": [{ "pattern": "exemple.fr", "custom_domain": true }]
+    },
+    // Mariage Aubrilha
+    "aubrilha": {
+      "name": "mariage-aubrilha",
+      "vars": { "WEDDING_SLUG": "aubrilha" },
+      "d1_databases": [{ "binding": "DB", "database_name": "mariage-aubrilha", "database_id": "A_REMPLIR", "migrations_dir": "migrations" }]
+      // Domaine payant plus tard : "routes": [{ "pattern": "exemple.fr", "custom_domain": true }]
+    },
+    // Ethan & Julia
+    "ethan-julia": {
+      "name": "mariage-ethan-julia",
+      "vars": { "WEDDING_SLUG": "ethan-julia" },
+      "d1_databases": [{ "binding": "DB", "database_name": "mariage-ethan-julia", "database_id": "A_REMPLIR", "migrations_dir": "migrations" }]
+      // Domaine payant plus tard : "routes": [{ "pattern": "exemple.fr", "custom_domain": true }]
+    },
+    // Marie & Paul
+    "marie-paul": {
+      "name": "mariage-marie-paul",
+      "vars": { "WEDDING_SLUG": "marie-paul" },
+      "d1_databases": [{ "binding": "DB", "database_name": "mariage-marie-paul", "database_id": "A_REMPLIR", "migrations_dir": "migrations" }]
+      // Domaine payant plus tard : "routes": [{ "pattern": "exemple.fr", "custom_domain": true }]
+    },
+    // Emma & Gab
+    "emma-gab": {
+      "name": "mariage-emma-gab",
+      "vars": { "WEDDING_SLUG": "emma-gab" },
+      "d1_databases": [{ "binding": "DB", "database_name": "mariage-emma-gab", "database_id": "A_REMPLIR", "migrations_dir": "migrations" }]
+      // Domaine payant plus tard : "routes": [{ "pattern": "exemple.fr", "custom_domain": true }]
+    }
+  }
+}

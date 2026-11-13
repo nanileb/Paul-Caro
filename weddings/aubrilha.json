@@ -1,0 +1,196 @@
+{
+  "slug": "aubrilha",
+  "partner1": "Caroline",
+  "partner2": "Paul",
+  "monogram": "C & P",
+  "dateISO": "2027-05-15T15:00:00+02:00",
+  "dateLabel": "15 mai 2027",
+  "place": "Clermont-l'Hérault",
+  "seo": {
+    "title": "Caroline & Paul — 15 mai 2027",
+    "description": "Caroline & Paul se marient le 15 mai 2027 au Mas Aubrilha, Clermont-l'Hérault. Rejoignez-nous pour célébrer notre mariage sous le soleil du Languedoc.",
+    "image": "https://media.base44.com/images/public/6a9d39a0d9b4b358678e11a4/341d5141a_Drone-Ops-20240928-DJI_0647.jpg"
+  },
+  "theme": {
+    "background": "#FAF8F3",
+    "surface": "#FFFFFF",
+    "text": "#2A4A1D",
+    "primary": "#D2643A",
+    "accent": "#E1A93A",
+    "heroText": "#FFFFFF",
+    "fontTitle": "Cormorant Garamond",
+    "fontBody": "Inter",
+    "overlay": "linear-gradient(180deg, rgba(20,30,10,0.25), rgba(20,30,10,0.55))"
+  },
+  "media": {
+    "heroImage": "https://media.base44.com/images/public/6a9d39a0d9b4b358678e11a4/341d5141a_Drone-Ops-20240928-DJI_0647.jpg"
+  },
+  "splash": {
+    "enabled": true,
+    "kicker": "Nous nous marions"
+  },
+  "hero": {
+    "kicker": "15 mai 2027 · Clermont-l'Hérault",
+    "cta": "Répondre à l'invitation"
+  },
+  "quote": "Nous sommes ravis et émus de vous inviter à célébrer notre mariage sous le soleil du Languedoc, au cœur des oliviers du Mas Aubrilha. Votre présence rendra ce jour inoubliable.",
+  "events": [
+    {
+      "key": "accueil",
+      "title": "Accueil des invités",
+      "day": "Samedi 15 mai 2027",
+      "time": "15h00",
+      "icon": "sparkles",
+      "note": "Nous vous accueillons au Mas Aubrilha pour un verre de bienvenue sous les oliviers.",
+      "noRsvp": true
+    },
+    {
+      "key": "ceremonie",
+      "title": "Cérémonie laïque",
+      "day": "Samedi 15 mai 2027",
+      "time": "16h30",
+      "icon": "heart",
+      "note": "Échange de nos vœux en plein air, entourés de nos proches, au cœur du domaine."
+    },
+    {
+      "key": "cocktail",
+      "title": "Vin d'honneur & cocktail",
+      "day": "Samedi 15 mai 2027",
+      "time": "18h00",
+      "icon": "glass",
+      "note": "Apéritif dînatoire aux saveurs méditerranéennes, musique live et retrouvailles.",
+      "noRsvp": true
+    },
+    {
+      "key": "soiree_samedi",
+      "title": "Soirée",
+      "day": "Samedi 15 mai 2027",
+      "time": "21h00",
+      "icon": "music",
+      "note": "Dîner, danse et fête jusqu'au bout de la nuit sous les étoiles du Languedoc."
+    },
+    {
+      "key": "repas_dimanche",
+      "title": "Repas de midi",
+      "day": "Dimanche 16 mai 2027",
+      "time": "12h30",
+      "icon": "sun",
+      "note": "Brunch convivial et repas de famille pour prolonger la fête en douceur."
+    },
+    {
+      "key": "soiree_dimanche",
+      "title": "Soirée",
+      "day": "Dimanche 16 mai 2027",
+      "time": "18h00",
+      "icon": "music",
+      "note": "Dernière soirée détendue pour clôturer le weekend tous ensemble."
+    }
+  ],
+  "programme": {
+    "title": "Deux jours de fête",
+    "intro": "Voici le déroulé provisoire de notre weekend de mariage. Les horaires sont susceptibles d'évoluer, nous vous tiendrons informés.",
+    "provisional": true
+  },
+  "venues": [
+    {
+      "key": "mas",
+      "label": "Le lieu",
+      "name": "Mas Aubrilha",
+      "address": "Chemin du Mas de Siau, 34800 Clermont-l'Hérault",
+      "description": "Niché au milieu des oliviers, le Mas Aubrilha est un domaine de caractère qui nous a tout de suite fait craquer. Nous y célébrerons l'ensemble du weekend, cérémonie, repas et soirée compris."
+    }
+  ],
+  "access": [
+    {
+      "icon": "car",
+      "title": "En voiture",
+      "text": "Le Mas Aubrilha est accessible en voiture depuis Clermont-l'Hérault. Un parking est prévu sur place pour les invités."
+    },
+    {
+      "icon": "parking",
+      "title": "Stationnement",
+      "text": "Un parking gratuit est disponible directement au domaine. Suivez le balisage le jour J."
+    },
+    {
+      "icon": "train",
+      "title": "En train",
+      "text": "Gare de Montpellier Saint-Roch ou gare de Montpellier Sud de France (TGV), à environ 45 min du domaine."
+    },
+    {
+      "icon": "plane",
+      "title": "En avion",
+      "text": "Aéroport de Montpellier-Méditerranée, à environ 50 min en voiture du Mas Aubrilha."
+    }
+  ],
+  "infos": {
+    "dressCode": {
+      "text": "Nous vous invitons à porter des tenues colorées et estivales, dans l'esprit méditerranéen de la journée. Évitez le noir : place aux terracotta, ocres, verts olive, bleus et blancs cassés. Prévoyez des chaussures confortables : une partie de la journée se déroulera en extérieur, sur herbe et gravier.",
+      "swatches": [
+        {
+          "name": "Terracotta",
+          "hex": "#D2643A"
+        },
+        {
+          "name": "Ocre",
+          "hex": "#E1A93A"
+        },
+        {
+          "name": "Olive",
+          "hex": "#2A4A1D"
+        },
+        {
+          "name": "Lapis",
+          "hex": "#204A7A"
+        },
+        {
+          "name": "Blanc cassé",
+          "hex": "#F5F3EC"
+        }
+      ]
+    },
+    "blocks": [
+      {
+        "title": "Enfants & garde",
+        "text": "Aucune nounou ni garde d'enfants ne sera assurée sur place. Si vous venez avec vos enfants, merci d'organiser vous-même leur accompagnement en amont."
+      }
+    ]
+  },
+  "hotels": [
+    {
+      "name": "Brit Hôtel",
+      "place": "Clermont-l'Hérault et environs",
+      "text": "Hôtel partenaire — mentionnez le mariage Caroline & Paul lors de votre réservation."
+    },
+    {
+      "name": "Hôtel Le Sarac",
+      "place": "Clermont-l'Hérault et environs",
+      "text": "Hôtel partenaire — mentionnez le mariage Caroline & Paul lors de votre réservation."
+    }
+  ],
+  "hotelsNote": "D'autres hébergements (gîtes, chambres d'hôtes) sont disponibles dans le secteur — n'hésitez pas à nous écrire pour des recommandations.",
+  "faq": [
+    {
+      "q": "Comment réserver ma chambre ?",
+      "a": "Contactez directement l'un des deux hôtels partenaires en mentionnant notre mariage pour bénéficier de conditions préférentielles, dans la limite des disponibilités."
+    },
+    {
+      "q": "Y a-t-il une navette depuis Montpellier ?",
+      "a": "Aucune navette n'est prévue pour l'instant. Si plusieurs invités arrivent en train, nous étudierons la possibilité d'organiser un transport collectif — n'hésitez pas à nous le signaler dans votre RSVP."
+    },
+    {
+      "q": "Puis-je venir avec mes enfants ?",
+      "a": "Les enfants sont les bienvenus, mais sachez qu'aucune garde ni nounou ne sera assurée sur place. Merci de prévoir vous-même leur accompagnement."
+    },
+    {
+      "q": "Jusqu'à quand puis-je répondre ?",
+      "a": "Merci de confirmer votre présence avant le 1er mars 2027 via la page RSVP, afin que nous puissions finaliser l'organisation."
+    }
+  ],
+  "rsvp": {
+    "deadlineLabel": "1er mars 2027",
+    "perEvent": true,
+    "askDietary": true,
+    "maxPersons": 10,
+    "thanks": "Nous avons hâte de partager ce moment avec vous. En attendant, préparez vos plus belles tenues colorées !"
+  }
+}

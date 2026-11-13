@@ -1,0 +1,62 @@
+{
+  "slug": "pauline-benjamin",
+  "partner1": "Pauline",
+  "partner2": "Benjamin",
+  "monogram": "P & B",
+  "dateISO": "2027-09-11T11:00:00+02:00",
+  "dateLabel": "11 septembre 2027",
+  "place": "Saint-Fiacre-sur-Maine",
+  "seo": {
+    "title": "Pauline & Benjamin · Mariage 11.09.2027",
+    "description": "Pauline & Benjamin se marient le 11 septembre 2027 à Saint-Fiacre-sur-Maine. Répondez à l'invitation et découvrez le programme du mariage.",
+    "image": "https://media.base44.com/images/public/user_698313b55a896eaad80dbdcc/63a527223_ChatGPTImage19sept202617_48_15.png"
+  },
+  "theme": {
+    "background": "#06262B", "surface": "rgba(6,38,43,0.62)", "text": "#FFF7EE", "primary": "#0FA3A8", "accent": "#FFC94D", "heroText": "#FFFFFF",
+    "fontTitle": "Cormorant Garamond", "fontScript": "Pinyon Script", "fontBody": "Poppins",
+    "countdownColors": ["#0FA3A8", "#D6338A", "#F2743A", "#FFC94D"],
+    "overlay": "linear-gradient(180deg, rgba(6,38,43,0.35) 0%, rgba(6,38,43,0.20) 40%, rgba(6,38,43,0.55) 100%)"
+  },
+  "media": {
+    "heroImage": "https://media.base44.com/images/public/user_698313b55a896eaad80dbdcc/63a527223_ChatGPTImage19sept202617_48_15.png",
+    "heroImageMobile": "https://media.base44.com/images/public/user_698313b55a896eaad80dbdcc/f603c6962_Fond.jpg",
+    "heroVideo": "https://media.base44.com/videos/public/6aaeaef832972e264e8fc33c/91c2a6113_3122AF81-BC38-4A85-9605-5F3C1A2CA9A3.mov",
+    "music": ["https://media.base44.com/files/public/user_698313b55a896eaad80dbdcc/da581dc46_Loonsesentbien.mp3"]
+  },
+  "splash": { "enabled": true, "kicker": "Nous nous marions" },
+  "hero": { "kicker": "Nous nous marions", "text": "Vous invitent à célébrer leur mariage", "cta": "Répondre à l'invitation" },
+  "events": [
+    { "key": "mairie", "title": "Mairie de Maisdon-sur-Sèvre", "day": "Samedi 11 septembre 2027", "time": "10h00", "icon": "mairie", "venue": "mairie" },
+    { "key": "ceremonie", "title": "Cérémonie laïque", "day": "Samedi 11 septembre 2027", "time": "11h00", "icon": "flower", "venue": "salle" },
+    { "key": "vin_honneur_repas", "title": "Repas", "day": "Samedi 11 septembre 2027", "time": "12h00", "icon": "food", "venue": "salle" },
+    { "key": "soiree", "title": "Ouverture de bal & soirée dansante", "day": "Samedi 11 septembre 2027", "time": "20h00", "icon": "music", "venue": "salle" },
+    { "key": "repas_retour", "title": "Repas du retour", "day": "Dimanche 12 septembre 2027", "time": "12h00", "icon": "sun", "venue": "salle" }
+  ],
+  "programme": { "title": "Le programme" },
+  "venues": [
+    { "key": "mairie", "label": "La mairie", "name": "Mairie de Maisdon-sur-Sèvre", "address": "20 Rue de la Mairie, 44690 Maisdon-sur-Sèvre", "onlyForEvents": ["mairie"] },
+    { "key": "salle", "label": "Le lieu", "name": "Salle des Vignes", "address": "11 Rue Beauséjour, 44690 Saint-Fiacre-sur-Maine" }
+  ],
+  "infos": {
+    "dressCode": {
+      "text": "Couleurs vives, imprimés tropicaux, élégance estivale.",
+      "swatches": [
+        { "name": "Fuchsia", "hex": "#D6338A" }, { "name": "Turquoise", "hex": "#0FA3A8" }, { "name": "Corail", "hex": "#F2743A" },
+        { "name": "Jaune", "hex": "#FFC94D" }, { "name": "Rouge", "hex": "#D32F2F" }, { "name": "Vert palmier", "hex": "#0A4F55" }
+      ]
+    },
+    "blocks": [
+      { "title": "Mariage sans enfant", "text": "Afin que chacun puisse profiter pleinement de cette journée, nous avons choisi de célébrer notre mariage entre adultes." },
+      { "title": "Date limite de réponse", "text": "Merci de nous répondre avant le 31 mai 2027." }
+    ]
+  },
+  "rsvp": { "deadlineLabel": "31 mai 2027", "perEvent": true, "askDietary": true, "maxPersons": 10 },
+  "profiles": {
+    "q7f2m4": { "label": "Famille", "events": ["mairie", "ceremonie", "vin_honneur_repas", "soiree", "repas_retour"] },
+    "d9k5x1": { "label": "Invités", "events": ["ceremonie", "vin_honneur_repas", "soiree", "repas_retour"] },
+    "b3n8r6": { "label": "Cérémonie seule", "events": ["ceremonie"] },
+    "z4t7w2": { "label": "Bal seul", "events": ["soiree"] }
+  },
+  "defaultProfile": "d9k5x1",
+  "guestList": true
+}

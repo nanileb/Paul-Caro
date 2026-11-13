@@ -1,0 +1,43 @@
+{
+  "slug": "ethan-julia",
+  "partner1": "Ethan",
+  "partner2": "Julia",
+  "monogram": "E & J",
+  "dateISO": "2027-07-30T15:00:00+02:00",
+  "dateLabel": "30 juillet 2027",
+  "place": "Toscane, Italie",
+  "seo": { "title": "Ethan & Julia — 30 Juillet 2027", "description": "Ethan & Julia — 30 juillet 2027, Toscane, Italie. Le bonheur de vous inviter à célébrer notre mariage.", "image": "https://media.base44.com/images/public/6a74962685fea72b598d6cda/d6f5f0835_generated_6f97c805.png" },
+  "theme": {
+    "background": "#F8F5EC", "surface": "#FFFFFF", "text": "#4A5A3A", "primary": "#4A5A3A", "accent": "#C9A66B", "heroText": "#F8F5EC",
+    "fontTitle": "Cormorant Garamond", "fontScript": "Parisienne", "fontBody": "Montserrat",
+    "overlay": "linear-gradient(180deg, rgba(40,48,30,0.25), rgba(40,48,30,0.55))"
+  },
+  "media": {
+    "heroImage": "https://media.base44.com/images/public/6a74962685fea72b598d6cda/d6f5f0835_generated_6f97c805.png",
+    "music": ["https://media.base44.com/files/public/6a74962685fea72b598d6cda/f32232cdb_VolareNelBludiPintodiBlu.mp3"]
+  },
+  "splash": { "enabled": true, "kicker": "Le 30 juillet 2027", "text": "Ont le bonheur de vous inviter à célébrer leur mariage en Toscane, Italie." },
+  "hero": { "kicker": "Le compte à rebours a commencé", "cta": "Répondre à l'invitation" },
+  "story": {
+    "title": "Notre histoire",
+    "paragraphs": [
+      "Il y a des rencontres qui vous changent. Les chemins qui mènent à soi prennent parfois des détours inattendus. La cérémonie civile, en mairie à Paris, a déjà officialisé la signature de notre mariage le 27 juillet. Nous tiendrons avec joie l'union de nos deux âmes au cœur de la Toscane quelques jours plus tard.",
+      "Votre présence, à nos côtés, rendra ce jour exceptionnel. Nous vous remercions du fond du cœur d'avoir fait le déplacement pour partager ce moment d'exception. Ce site est le nôtre — un écrin pour vous guider jusqu'à nous."
+    ],
+    "signature": "Ethan & Julia — avec tout notre amour"
+  },
+  "events": [
+    { "key": "civile", "title": "Cérémonie civile", "day": "27 juillet 2027 — Paris", "time": "16h00", "icon": "mairie", "note": "Mairie du 16ème, Paris", "venue": "paris" },
+    { "key": "ceremonie", "title": "Cérémonie", "day": "30 juillet 2027 — Toscane", "time": "16h00", "icon": "heart", "note": "Échange des vœux", "venue": "toscane" },
+    { "key": "cocktail", "title": "Cocktail", "day": "30 juillet 2027 — Toscane", "time": "17h30", "icon": "glass", "note": "Vins d'honneur & apéritifs", "venue": "toscane" },
+    { "key": "diner", "title": "Dîner", "day": "30 juillet 2027 — Toscane", "time": "20h00", "icon": "food", "note": "Dîner de gala en plein air", "venue": "toscane" },
+    { "key": "soiree", "title": "Soirée dansante", "day": "30 juillet 2027 — Toscane", "time": "22h30", "icon": "music", "note": "Ouverture du bal", "venue": "toscane" },
+    { "key": "fin", "title": "Fin de soirée", "day": "30 juillet 2027 — Toscane", "time": "01h00", "icon": "moon", "note": "Dernier verre sous les étoiles", "venue": "toscane" }
+  ],
+  "programme": { "title": "Le programme", "intro": "Deux journées, deux lieux, une même joie partagée." },
+  "venues": [
+    { "key": "paris", "label": "La cérémonie civile — 27 juillet 2027", "name": "Mairie du 16ème arrondissement", "address": "71 Avenue Henri-Martin, 75016 Paris", "description": "Une cérémonie intime en présence des proches." },
+    { "key": "toscane", "label": "Le mariage — 30 juillet 2027", "name": "Tenuta Il Palagio", "address": "Tenuta Il Palagio, Toscane, Italie", "description": "Nichée entre les collines toscanes, bordée de cyprès centenaires et de pierre ancienne baignée de lumière dorée, la Tenuta Il Palagio ouvre ses portes pour célébrer notre union." }
+  ],
+  "rsvp": { "deadlineLabel": "1er mars 2027", "perEvent": false, "askDietary": true, "maxPersons": 10 }
+}
