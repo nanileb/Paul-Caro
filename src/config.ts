@@ -51,6 +51,7 @@ export type WeddingConfig = {
     fontBody: string
     countdownColors?: string[]
     overlay?: string // voile sur l'image/vidéo de fond
+    accentInk?: string // variante foncée de l'accent pour du texte sur fond clair (layout classic)
   }
   media: {
     heroImage?: string
@@ -88,6 +89,7 @@ export type WeddingConfig = {
   defaultProfile?: string
   guestList?: boolean // liste d'invités attendus + relances dans l'espace mariés
   footerNote?: string
+  layout?: 'classic' // en-tête clair : barre de menu, grande photo fondue en bas, noms en dessous
 }
 
 import paulCaroline from '../weddings/paul-caroline-wedding.json'
@@ -111,6 +113,12 @@ export function profileFor(w: WeddingConfig, token: string | undefined | null): 
   if (!w.profiles) return { key: 'tous', profile: { label: 'Tous', events: all } }
   const key = token && w.profiles[token] ? token : w.defaultProfile ?? Object.keys(w.profiles)[0]
   return { key, profile: w.profiles[key] }
+}
+
+// Libellé d'un moment avec son jour quand le mariage dure plusieurs jours (« Soirée (samedi) »)
+export function eventLabel(w: WeddingConfig, e: WeddingEvent) {
+  const multi = new Set(w.events.map((x) => x.day)).size > 1
+  return multi ? `${e.title} (${e.day.split(' ')[0].toLowerCase()})` : e.title
 }
 
 export const groupLabel = (w: WeddingConfig, key: string | null) => (key && w.profiles?.[key]?.label) || key || '—'

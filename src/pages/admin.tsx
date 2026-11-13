@@ -1,7 +1,7 @@
 import type { Child } from 'hono/jsx'
 import { raw } from 'hono/html'
-import { groupLabel, type WeddingConfig } from '../config'
-import { eventsOf, peopleOf, type Invite, type Rsvp } from '../db'
+import { eventLabel, groupLabel, type WeddingConfig } from '../config'
+import { eventsOf, normalizeName, peopleOf, type Invite, type Rsvp } from '../db'
 import { adminCss } from '../styles'
 import { adminScript } from '../client/admin'
 
@@ -79,7 +79,7 @@ export function Dashboard(p: Props) {
           <div class="kpi"><b>{rsvps.length}</b><span>réponses</span></div>
           <div class="kpi"><b>{rsvps.length - present.length}</b><span>absents</span></div>
           {perEvent
-            ? eventTotals.map((t) => <div class="kpi"><b>{t.people}</b><span>{t.e.title} (pers.)</span></div>)
+            ? eventTotals.map((t) => <div class="kpi"><b>{t.people}</b><span>{eventLabel(w, t.e)} (pers.)</span></div>)
             : <div class="kpi"><b>{present.reduce((n, r) => n + peopleOf(r), 0)}</b><span>personnes attendues</span></div>}
         </div>
         <nav class="tabs">
@@ -90,7 +90,7 @@ export function Dashboard(p: Props) {
           <div class="cols">
             {eventTotals.map((t) => (
               <div class="box">
-                <h3>{t.e.title} <span class="pill">{t.people} pers.</span></h3>
+                <h3>{eventLabel(w, t.e)} <span class="pill">{t.people} pers.</span></h3>
                 {t.who.length ? <ul class="list">{t.who.map((r) => <li><span>{r.prenom} {r.nom}</span><b>{eventsOf(r)[t.e.key]}</b></li>)}</ul> : <p class="muted">Personne pour le moment.</p>}
               </div>
             ))}
@@ -142,9 +142,12 @@ export function Dashboard(p: Props) {
 
 function Responses({ w, rsvps, q, groupe, evt }: Props) {
   const rsvpEvents = w.events.filter((e) => !e.noRsvp)
-  const s = q.toLowerCase()
+  const s = normalizeName(q)
+  const nameCount = new Map<string, number>()
+  for (const r of rsvps) { const n = `${normalizeName(r.prenom)} ${normalizeName(r.nom)}`; nameCount.set(n, (nameCount.get(n) ?? 0) + 1) }
+  const isDup = (r: Rsvp) => (nameCount.get(`${normalizeName(r.prenom)} ${normalizeName(r.nom)}`) ?? 0) > 1
   const rows = rsvps.filter((r) =>
-    (!s || `${r.prenom} ${r.nom} ${r.email ?? ''}`.toLowerCase().includes(s)) &&
+    (!s || normalizeName(`${r.prenom} ${r.nom} ${r.email ?? ''}`).includes(s)) &&
     (!groupe || r.groupe === groupe) &&
     (!evt || (!r.absent && eventsOf(r)[evt])),
   )
@@ -157,7 +160,7 @@ function Responses({ w, rsvps, q, groupe, evt }: Props) {
         {w.profiles && Object.keys(w.profiles).length > 1 && (
           <select name="groupe"><option value="">Tous les groupes</option>{Object.entries(w.profiles).map(([k, pr]) => <option value={k} selected={groupe === k}>{pr.label}</option>)}</select>
         )}
-        {w.rsvp.perEvent && <select name="evt"><option value="">Tous les événements</option>{rsvpEvents.map((e) => <option value={e.key} selected={evt === e.key}>{e.title}</option>)}</select>}
+        {w.rsvp.perEvent && <select name="evt"><option value="">Tous les événements</option>{rsvpEvents.map((e) => <option value={e.key} selected={evt === e.key}>{eventLabel(w, e)}</option>)}</select>}
         <button class="btn light sm">Filtrer</button>
         <a class="btn sm" href={`/espace-maries/reponses.csv?${qs}`}>Exporter en CSV (Excel)</a>
       </form>
@@ -165,14 +168,14 @@ function Responses({ w, rsvps, q, groupe, evt }: Props) {
         <table>
           <tr>
             <th>Nom</th>{w.profiles && <th>Groupe</th>}<th class="c">Présent</th>
-            {w.rsvp.perEvent ? rsvpEvents.map((e) => <th class="c">{e.title}</th>) : <th class="c">Pers.</th>}
+            {w.rsvp.perEvent ? rsvpEvents.map((e) => <th class="c">{eventLabel(w, e)}</th>) : <th class="c">Pers.</th>}
             {w.rsvp.askCompanions && <th>Accompagnants</th>}<th>Restrictions</th><th>Message</th><th>Date</th><th></th>
           </tr>
           {rows.map((r) => {
             const ev = eventsOf(r)
             return (
               <tr>
-                <td><b>{r.prenom} {r.nom}</b>{r.email && <div class="muted">{r.email}</div>}</td>
+                <td><b>{r.prenom} {r.nom}</b>{isDup(r) && <> <span class="pill warn" title="Plusieurs réponses à ce nom : vérifiez s'il s'agit d'un doublon">doublon ?</span></>}{r.email && <div class="muted">{r.email}</div>}</td>
                 {w.profiles && <td><span class="pill">{groupLabel(w, r.groupe)}</span></td>}
                 <td class="c">{r.absent ? <span class="no">Non</span> : <span class="yes">Oui</span>}</td>
                 {w.rsvp.perEvent
@@ -194,8 +197,8 @@ function Responses({ w, rsvps, q, groupe, evt }: Props) {
 }
 
 function Invites({ invites, q, statut }: Props) {
-  const s = q.toLowerCase()
-  const rows = invites.filter((i) => (!statut || i.statut === statut) && (!s || `${i.nom} ${i.prenom}`.toLowerCase().includes(s)))
+  const s = normalizeName(q)
+  const rows = invites.filter((i) => (!statut || i.statut === statut) && (!s || normalizeName(`${i.nom} ${i.prenom}`).includes(s)))
   const repondu = invites.filter((i) => i.statut === 'repondu').length
   return (
     <>

@@ -39,7 +39,13 @@ if (file) {
     out.innerHTML = '<p class="muted">Lecture du fichier…</p>'; go.disabled = true;
     try {
       await loadXlsx();
-      const wb = XLSX.read(await file.files[0].arrayBuffer(), { type: 'array' });
+      // CSV : on décode nous-mêmes (UTF-8, sinon Windows-1252) et on garde les valeurs en texte (« 2,5 » ≠ 25)
+      const f = file.files[0], buf = await f.arrayBuffer();
+      let wb;
+      if (/\\.(csv|txt)$/i.test(f.name)) {
+        let txt; try { txt = new TextDecoder('utf-8', { fatal: true }).decode(buf); } catch { txt = new TextDecoder('windows-1252').decode(buf); }
+        wb = XLSX.read(txt.replace(/^\\uFEFF/, ''), { type: 'string', raw: true });
+      } else wb = XLSX.read(buf, { type: 'array' });
       const m = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { header: 1, raw: true, defval: '' }).filter((r) => r.some((c) => String(c).trim()));
       if (!m.length) throw new Error('Le fichier est vide.');
       const start = isNum(m[0][2]) ? 0 : 1, ignored = [];

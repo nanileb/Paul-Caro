@@ -1,6 +1,6 @@
 import type { Child } from 'hono/jsx'
 import { raw } from 'hono/html'
-import type { WeddingConfig, WeddingEvent } from '../config'
+import { eventLabel, type WeddingConfig, type WeddingEvent } from '../config'
 import { eventsOf, type Rsvp } from '../db'
 import { Svg } from '../icons'
 import { css, fontsHref } from '../styles'
@@ -12,6 +12,11 @@ const maps = (q: string) => ({
   apple: `https://maps.apple.com/?q=${encodeURIComponent(q)}`,
   embed: `https://maps.google.com/maps?q=${encodeURIComponent(q)}&z=14&output=embed`,
 })
+
+// Numéros de téléphone français cliquables (lien tel:)
+const withPhones = (s: string) =>
+  s.split(/((?:\+33\s?|0)[1-9](?:[\s.]?\d{2}){4})/).map((part, i) =>
+    i % 2 ? <a href={`tel:${part.replace(/[\s.]/g, '')}`}>{part}</a> : part)
 
 const Names = ({ w }: { w: WeddingConfig }) => (
   <>
@@ -69,10 +74,11 @@ export function Home({ w, profileKey, visible, existing, error }: HomeProps) {
     ['faq', 'FAQ', !!w.faq?.length],
     ['rsvp', 'RSVP', true],
   ]
+  const classic = w.layout === 'classic'
   const hasBg = !!(w.media.heroImage || w.media.heroVideo)
   const k = profileKey !== w.defaultProfile ? profileKey : ''
   return (
-    <Page w={w} title={w.seo.title} bodyClass={hasBg ? 'on-image' : ''}>
+    <Page w={w} title={w.seo.title} bodyClass={classic ? 'classic' : hasBg ? 'on-image' : ''}>
       <div class="bgfix" aria-hidden="true">
         {w.media.heroImage && (
           <picture>
@@ -87,7 +93,8 @@ export function Home({ w, profileKey, visible, existing, error }: HomeProps) {
       {w.splash.enabled && (
         <div class="splash" id="splash">
           {w.media.splashVideo && <video src={w.media.splashVideo} muted playsinline loop autoplay></video>}
-          {(w.media.splashVideo || hasBg) && <div class="veil"></div>}
+          {classic && w.hero.photo && <img class="splash-bg" src={w.hero.photo} alt="" />}
+          {(w.media.splashVideo || hasBg || classic) && <div class="veil"></div>}
           <div class="inner">
             {w.splash.kicker && <p class="kicker">{w.splash.kicker}</p>}
             <h1><Names w={w} /></h1>
@@ -98,32 +105,60 @@ export function Home({ w, profileKey, visible, existing, error }: HomeProps) {
       )}
 
       <nav class="nav" id="nav">
-        <a class="mono" href="#accueil">{w.monogram ?? `${w.partner1[0]} & ${w.partner2[0]}`}</a>
+        <a class="mono" href="#accueil">{classic ? <Names w={w} /> : w.monogram ?? `${w.partner1[0]} & ${w.partner2[0]}`}</a>
         <button class="burger" type="button" aria-label="Menu" data-burger><Svg name="menu" /></button>
         <ul>
+          {classic && <li><a href="#accueil">Accueil</a></li>}
           {nav.filter(([, , on]) => on).map(([id, label]) => <li><a href={`#${id}`}>{label}</a></li>)}
         </ul>
       </nav>
 
-      <header class={`hero${w.hero.photo ? ' with-photo' : ''}`} id="accueil">
-        {!hasBg && w.monogram && <div class="mono-bg" aria-hidden="true">{w.monogram}</div>}
-        {w.hero.photo && (
-          <figure class="hero-photo"><img src={w.hero.photo} alt={`${w.partner1} et ${w.partner2}`} style={w.hero.photoPosition ? `object-position:${w.hero.photoPosition}` : undefined} /></figure>
-        )}
-        <div class="hero-text">
-          {w.hero.kicker && <p class="kicker">{w.hero.kicker}</p>}
-          <h1><Names w={w} /></h1>
-          {w.hero.text && <p>{w.hero.text}</p>}
-          <div class="date">{w.dateLabel}</div>
-          <div class="place">{w.place}</div>
-          <div class="countdown" data-countdown={w.dateISO}>
-            {['jours', 'heures', 'minutes', 'secondes'].map((u, i) => (
-              <div style={w.theme.countdownColors ? `--c:${w.theme.countdownColors[i]}` : ''}><b data-u={i}>--</b><small>{u}</small></div>
-            ))}
+      {classic ? (
+        <>
+          <header class="chero" id="accueil">
+            {w.hero.photo && (
+              <div class="chero-photo">
+                <img src={w.hero.photo} alt={`${w.partner1} et ${w.partner2}`} style={w.hero.photoPosition ? `object-position:${w.hero.photoPosition}` : undefined} />
+              </div>
+            )}
+            <div class="chero-text">
+              <p class="kicker">{w.hero.kicker ?? `${w.dateLabel} · ${w.place}`}</p>
+              <h1><Names w={w} /></h1>
+            </div>
+          </header>
+          <section class="soon">
+            <p class="kicker">Le grand jour approche</p>
+            {w.hero.text && <p class="tagline">{w.hero.text}</p>}
+            <div class="date">{w.dateLabel}</div>
+            <div class="countdown" data-countdown={w.dateISO}>
+              {['jours', 'heures', 'minutes', 'secondes'].map((u, i) => (
+                <div><b data-u={i}>--</b><small>{u}</small></div>
+              ))}
+            </div>
+            <a class="btn" href="#rsvp">{w.hero.cta ?? "Répondre à l'invitation"}</a>
+          </section>
+        </>
+      ) : (
+        <header class={`hero${w.hero.photo ? ' with-photo' : ''}`} id="accueil">
+          {!hasBg && w.monogram && <div class="mono-bg" aria-hidden="true">{w.monogram}</div>}
+          {w.hero.photo && (
+            <figure class="hero-photo"><img src={w.hero.photo} alt={`${w.partner1} et ${w.partner2}`} style={w.hero.photoPosition ? `object-position:${w.hero.photoPosition}` : undefined} /></figure>
+          )}
+          <div class="hero-text">
+            {w.hero.kicker && <p class="kicker">{w.hero.kicker}</p>}
+            <h1><Names w={w} /></h1>
+            {w.hero.text && <p>{w.hero.text}</p>}
+            <div class="date">{w.dateLabel}</div>
+            <div class="place">{w.place}</div>
+            <div class="countdown" data-countdown={w.dateISO}>
+              {['jours', 'heures', 'minutes', 'secondes'].map((u, i) => (
+                <div style={w.theme.countdownColors ? `--c:${w.theme.countdownColors[i]}` : ''}><b data-u={i}>--</b><small>{u}</small></div>
+              ))}
+            </div>
+            <a class="btn" href="#rsvp">{w.hero.cta ?? "Répondre à l'invitation"}</a>
           </div>
-          <a class="btn" href="#rsvp">{w.hero.cta ?? "Répondre à l'invitation"}</a>
-        </div>
-      </header>
+        </header>
+      )}
 
       <main>
         {w.quote && (
@@ -232,7 +267,7 @@ export function Home({ w, profileKey, visible, existing, error }: HomeProps) {
                 {w.hotels.map((h) => (
                   <div class="icard">
                     <span class="ic"><Svg name="bed" /></span>
-                    <div><h4>{h.name}</h4>{h.place && <p class="hint">{h.place}</p>}<p style="white-space:pre-line">{h.text}</p>{h.url && <a href={h.url} target="_blank" rel="noopener">Site de l'hôtel →</a>}</div>
+                    <div><h4>{h.name}</h4>{h.place && <p class="hint">{h.place}</p>}<p style="white-space:pre-line">{withPhones(h.text)}</p>{h.url && <a href={h.url} target="_blank" rel="noopener">Site de l'hôtel →</a>}</div>
                   </div>
                 ))}
               </div>
@@ -278,17 +313,19 @@ function RsvpForm({ w, visible, k, existing, error }: { w: WeddingConfig; visibl
   const r = w.rsvp
   const ev = existing ? eventsOf(existing) : {}
   const absent = existing ? !!existing.absent : false
+  const editing = !!existing?.token // modification d'une réponse enregistrée (et non simple réaffichage après erreur)
+  const party = Math.max(1, ...Object.values(ev))
   return (
     <>
       <div class="head">
-        <h2>{existing ? 'Modifier ma réponse' : "Répondez à l'invitation"}</h2>
+        <h2>{editing ? 'Modifier ma réponse' : "Répondez à l'invitation"}</h2>
         <div class="rule">✦</div>
         {r.deadlineLabel && <p class="lead">Merci de nous répondre avant le <strong>{r.deadlineLabel}</strong>.</p>}
       </div>
       <form class="rsvp" method="post" action="/rsvp" data-rsvp>
         {error && <p class="err">{error}</p>}
         <input type="hidden" name="k" value={k} />
-        {existing && <input type="hidden" name="token" value={existing.token} />}
+        {editing && <input type="hidden" name="token" value={existing!.token} />}
         <div class="two">
           <label class="f">Prénom *<input name="prenom" required maxlength={80} autocomplete="given-name" value={existing?.prenom ?? ''} /></label>
           <label class="f">Nom *<input name="nom" required maxlength={80} autocomplete="family-name" value={existing?.nom ?? ''} /></label>
@@ -304,14 +341,14 @@ function RsvpForm({ w, visible, k, existing, error }: { w: WeddingConfig; visibl
           {r.perEvent ? (
             <div class="evts">
               <label class="f">Nombre de participants (vous inclus)
-                <input type="number" name="participants" min={1} max={r.maxPersons} value={Math.max(1, ...Object.values(ev))} inputmode="numeric" data-participants />
+                <input type="number" name="participants" min={1} max={r.maxPersons} value={party} inputmode="numeric" data-participants />
               </label>
               <p class="hint">Cochez les moments où vous serez là ; le nombre de personnes est reporté sur chaque événement et reste modifiable.</p>
               {visible.filter((e) => !e.noRsvp).map((e) => (
                 <label class="evt">
                   <input type="checkbox" name="evt" value={e.key} checked={!!ev[e.key]} />
                   <span class="grow"><b>{e.title}</b><small>{e.day} · {e.time}</small></span>
-                  <input type="number" name={`nb_${e.key}`} min={1} max={r.maxPersons} value={ev[e.key] || 1} aria-label={`Nombre de personnes pour ${e.title}`} inputmode="numeric" />
+                  <input type="number" name={`nb_${e.key}`} min={1} max={r.maxPersons} value={ev[e.key] || party} aria-label={`Nombre de personnes pour ${e.title}`} inputmode="numeric" />
                 </label>
               ))}
             </div>
@@ -333,7 +370,7 @@ function RsvpForm({ w, visible, k, existing, error }: { w: WeddingConfig; visibl
 
         <label class="f">Un message pour les mariés<textarea name="message" rows={3} maxlength={2000} placeholder={`Un petit mot pour ${w.partner1} & ${w.partner2}…`}>{existing?.message ?? ''}</textarea></label>
         <input type="text" name="site_web" tabindex={-1} autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true" />
-        <button class="btn" type="submit" style="justify-self:center">{existing ? 'Enregistrer les modifications' : 'Envoyer ma réponse'}</button>
+        <button class="btn" type="submit" style="justify-self:center">{editing ? 'Enregistrer les modifications' : 'Envoyer ma réponse'}</button>
       </form>
     </>
   )
@@ -357,7 +394,7 @@ export function Thanks({ w, rsvp, events, k }: { w: WeddingConfig; rsvp: Rsvp; e
               {rsvp.absent ? (
                 <li>Vous ne pourrez malheureusement pas être présent(e). Vous nous manquerez !</li>
               ) : w.rsvp.perEvent ? (
-                events.filter((e) => ev[e.key]).map((e) => <li><span>{e.time} · {e.title}</span><strong>{ev[e.key]} pers.</strong></li>)
+                events.filter((e) => ev[e.key]).map((e) => <li><span>{eventLabel(w, e)} · {e.time}</span><strong>{ev[e.key]} pers.</strong></li>)
               ) : (
                 <li><span>Présence confirmée</span><strong>{rsvp.guests} pers.</strong></li>
               )}

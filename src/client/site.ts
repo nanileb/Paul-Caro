@@ -50,8 +50,10 @@ if (form) {
   const sync = () => { const absent = $('input[name=presence][value=non]', form).checked, present = $('input[name=presence][value=oui]', form).checked;
     zone.style.display = absent ? 'none' : ''; zone.style.opacity = present ? '1' : '.5';
     $$('.evt', form).forEach((row) => { const cb = $('input[type=checkbox]', row), nb = $('input[type=number]', row); nb.style.visibility = cb.checked ? 'visible' : 'hidden'; nb.disabled = !cb.checked; }); };
-  $$('input', form).forEach((i) => i.addEventListener('change', sync));
   const part = $('[data-participants]', form);
+  // Cocher un moment reprend le nombre de participants indiqué plus haut
+  $$('.evt input[type=checkbox]', form).forEach((cb) => cb.addEventListener('change', () => { if (cb.checked && part) $('input[type=number]', cb.closest('.evt')).value = part.value || 1; }));
+  $$('input', form).forEach((i) => i.addEventListener('change', sync));
   if (part) part.addEventListener('input', () => $$('.evt', form).forEach((row) => { const n = $('input[type=number]', row); n.value = part.value; }));
   sync();
   form.addEventListener('submit', (e) => {

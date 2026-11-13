@@ -1,9 +1,9 @@
 import { Hono, type Context } from 'hono'
 import { deleteCookie, getSignedCookie, setSignedCookie } from 'hono/cookie'
 import QRCode from 'qrcode'
-import { getWedding, profileFor, type WeddingConfig } from './config'
+import { eventLabel, getWedding, profileFor, type WeddingConfig } from './config'
 import {
-  deleteRsvp, eventsOf, getRsvpByToken, importInvites, listInvites, listRsvps, matchInvite, saveRsvp, tokenForEmail,
+  deleteRsvp, eventsOf, getRsvpByToken, importInvites, listInvites, listRsvps, matchInvite, normalizeName, saveRsvp, tokenForEmail,
   type Env, type ImportRow, type Rsvp,
 } from './db'
 import { Dashboard, Login, type Tab } from './pages/admin'
@@ -50,8 +50,18 @@ app.post('/rsvp', async (c) => {
   const absent = body.presence === 'non'
   const max = w.rsvp.maxPersons
 
-  const fail = (error: string) =>
-    c.html(<Home w={w} profileKey={key} visible={events} error={error} existing={null} />, 400)
+  // En cas de refus, on réaffiche le formulaire tel que saisi (et on garde le lien de modification)
+  const fail = (error: string) => {
+    const evs: Record<string, number> = {}
+    for (const e of rsvpEvents) if (([] as unknown[]).concat(body.evt ?? []).includes(e.key)) evs[e.key] = int(body[`nb_${e.key}`], 1, max)
+    const draft: Rsvp = {
+      id: 0, token: text(body.token, 64) ?? '', prenom: prenom ?? '', nom: nom ?? '', email, groupe: null,
+      absent: body.presence === 'non' ? 1 : 0, guests: int(body.guests, 1, max), events: JSON.stringify(evs),
+      companions: text(body.companions, 300), dietary: text(body.dietary, 500), menu: text(body.menu, 80), message: text(body.message, 2000),
+      created_at: '', updated_at: '',
+    }
+    return c.html(<Home w={w} profileKey={key} visible={events} error={error} existing={draft} />, 400)
+  }
   if (!prenom || !nom) return fail('Merci d’indiquer votre prénom et votre nom.')
   if (w.rsvp.askEmail && !email) return fail('Merci d’indiquer votre email.')
   if (body.presence !== 'oui' && body.presence !== 'non') return fail('Merci d’indiquer si vous serez présent(e).')
@@ -154,8 +164,8 @@ app.get('/espace-maries/reponses.csv', async (c) => {
   const { q = '', groupe = '', evt = '' } = c.req.query()
   const evs = w.events.filter((e) => !e.noRsvp)
   const rows = (await listRsvps(c.env.DB)).filter((r: Rsvp) =>
-    (!q || `${r.prenom} ${r.nom} ${r.email ?? ''}`.toLowerCase().includes(q.toLowerCase())) && (!groupe || r.groupe === groupe) && (!evt || (!r.absent && eventsOf(r)[evt])))
-  const head = ['Nom', 'Prénom', 'Email', 'Groupe', 'Présent', ...(w.rsvp.perEvent ? evs.map((e) => `${e.title} (pers.)`) : ['Personnes']), 'Accompagnants', 'Menu', 'Restrictions', 'Message', 'Date de réponse']
+    (!q || normalizeName(`${r.prenom} ${r.nom} ${r.email ?? ''}`).includes(normalizeName(q))) && (!groupe || r.groupe === groupe) && (!evt || (!r.absent && eventsOf(r)[evt])))
+  const head = ['Nom', 'Prénom', 'Email', 'Groupe', 'Présent', ...(w.rsvp.perEvent ? evs.map((e) => `${eventLabel(w, e)} (pers.)`) : ['Personnes']), 'Accompagnants', 'Menu', 'Restrictions', 'Message', 'Date de réponse']
   return csv([head, ...rows.map((r) => [
     r.nom, r.prenom, r.email, r.groupe ? w.profiles?.[r.groupe]?.label ?? r.groupe : '', r.absent ? 'Non' : 'Oui',
     ...(w.rsvp.perEvent ? evs.map((e) => eventsOf(r)[e.key] ?? 0) : [r.guests]),
