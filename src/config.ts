@@ -1,7 +1,7 @@
 // Description complète d'un mariage : tout le site est généré à partir de ce fichier.
 // Un fichier JSON par couple dans weddings/<slug>.json
 
-export type Icon = 'rings' | 'heart' | 'flower' | 'glass' | 'food' | 'music' | 'sun' | 'moon' | 'sparkles' | 'mairie' | 'cake'
+export type Icon = 'rings' | 'heart' | 'flower' | 'glass' | 'food' | 'music' | 'sun' | 'moon' | 'sparkles' | 'mairie' | 'cake' | 'utensils' | 'waves' | 'pizza'
 
 export type WeddingEvent = {
   key: string // identifiant stable, utilisé dans les réponses RSVP
@@ -51,7 +51,6 @@ export type WeddingConfig = {
     fontBody: string
     countdownColors?: string[]
     overlay?: string // voile sur l'image/vidéo de fond
-    accentInk?: string // variante foncée de l'accent pour du texte sur fond clair (layout classic)
   }
   media: {
     heroImage?: string
@@ -61,7 +60,7 @@ export type WeddingConfig = {
     music?: string[] // une ou plusieurs pistes enchaînées
   }
   splash: { enabled: boolean; kicker?: string; text?: string }
-  hero: { kicker?: string; text?: string; cta?: string; photo?: string; photoPosition?: string } // photo : portrait encadré dans l'en-tête
+  hero: { kicker?: string; text?: string; cta?: string; photo?: string; photoPosition?: string } // photo : portrait encadré (ou grande photo d'accueil en layout classic)
   story?: { title: string; paragraphs: string[]; signature?: string }
   quote?: string
   events: WeddingEvent[]
@@ -89,7 +88,15 @@ export type WeddingConfig = {
   defaultProfile?: string
   guestList?: boolean // liste d'invités attendus + relances dans l'espace mariés
   footerNote?: string
-  layout?: 'classic' // en-tête clair : barre de menu, grande photo fondue en bas, noms en dessous
+  layout?: 'classic' // site multi-pages (Accueil, Le lieu, Programme, Infos pratiques, RSVP), design d'origine Base44
+  classic?: {
+    weddingDay?: string // ex. "15 mai 2027" (écran d'entrée, en-tête de l'accueil)
+    venueLine?: string // ex. "Mas Aubrilha · Clermont-l'Hérault" (écran d'entrée)
+    footerPlace?: string // ex. "Mas Aubrilha — Clermont-l'Hérault"
+    venueImage?: string // photo en tête de la page Le lieu
+    banner?: { image: string; text: string } // bandeau photo + citation en bas de l'accueil
+    scheduleNote?: string // note en bas du programme
+  }
 }
 
 import paulCaroline from '../weddings/paul-caroline-wedding.json'

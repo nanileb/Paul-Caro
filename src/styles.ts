@@ -10,7 +10,6 @@ export const fontsHref = (t: WeddingConfig['theme']) =>
 export const css = (t: WeddingConfig['theme']) => `
 :root{--bg:${t.background};--surface:${t.surface};--text:${t.text};--primary:${t.primary};--accent:${t.accent};--hero:${t.heroText};
 --title:'${t.fontTitle}',Georgia,serif;--script:${t.fontScript ? `'${t.fontScript}',cursive` : `'${t.fontTitle}',Georgia,serif`};--body:'${t.fontBody}',system-ui,sans-serif;
---ink:${t.accentInk ?? t.accent};
 --line:color-mix(in srgb,var(--text) 14%,transparent);--soft:color-mix(in srgb,var(--text) 70%,transparent)}
 *{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:4.5rem}
 body{margin:0;font-family:var(--body);font-weight:300;background:var(--bg);color:var(--text);line-height:1.65;-webkit-font-smoothing:antialiased}
@@ -122,46 +121,6 @@ footer a{font-size:.75rem;opacity:.7}
 .reveal{opacity:0;transform:translateY(24px);transition:opacity .9s ease,transform .9s ease}.reveal.in{opacity:1;transform:none}
 @media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none}html{scroll-behavior:auto}}
 .on-image main section{color:var(--text)}
-/* ===== Layout « classic » : barre claire, grande photo fondue, noms en dessous ===== */
-.classic .nav,.classic .nav.solid{background:color-mix(in srgb,var(--bg) 94%,transparent);backdrop-filter:blur(10px);color:var(--text);box-shadow:0 1px 0 var(--line)}
-.classic .nav .mono{font-family:var(--title);font-size:1.45rem;white-space:nowrap}
-.classic .nav ul a{text-transform:none;letter-spacing:.02em;font-size:.92rem;opacity:1}
-.classic .nav ul a:hover{color:var(--primary)}
-.classic .nav .burger{width:44px;height:44px;align-items:center;justify-content:center;margin-right:-.5rem}
-@media(max-width:820px){.classic .nav .burger{display:flex}.classic .nav ul a{font-size:1rem}}
-.classic .amp{color:var(--primary)}
-.classic .kicker{color:var(--ink)}
-.chero{position:relative;padding-top:4.2rem;text-align:center}
-.chero-photo{position:relative;height:clamp(440px,80svh,780px);overflow:hidden}
-.chero-photo img{width:100%;height:100%;object-fit:cover;object-position:center 38%;display:block}
-.chero-photo:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 52%,color-mix(in srgb,var(--bg) 70%,transparent) 78%,var(--bg) 100%)}
-.chero-text{position:relative;margin-top:clamp(-11rem,-18vw,-7rem);padding:0 1.25rem 1rem}
-.chero-text .kicker{color:color-mix(in srgb,var(--text) 75%,transparent);font-weight:400;letter-spacing:.28em}
-.chero h1{font-family:var(--title);font-weight:400;font-size:clamp(3.2rem,11vw,6.6rem);color:var(--text);margin:0;line-height:1.05}
-.soon{text-align:center;padding:3rem 1.25rem 4rem}
-.soon .tagline{font-family:var(--title);font-style:italic;font-size:clamp(1.3rem,3.6vw,1.8rem);max-width:34rem;margin:0 auto 1rem;line-height:1.4}
-.soon .date{font-family:var(--title);font-size:clamp(1.15rem,3vw,1.5rem)}
-.classic .countdown{flex-wrap:nowrap;gap:clamp(.35rem,1.5vw,.8rem);margin:1.8rem auto 2.2rem;max-width:30rem}
-.classic .countdown div{flex:1;min-width:0;max-width:6.5rem;background:var(--surface);border:1px solid var(--line);backdrop-filter:none;padding:.85rem .2rem;box-shadow:0 6px 20px rgba(0,0,0,.05)}
-.classic .countdown b{color:var(--text);font-size:clamp(1.6rem,7vw,2.6rem);font-variant-numeric:lining-nums tabular-nums;margin-bottom:.3rem}
-.classic main section{padding:3.5rem 1.25rem}
-.classic main section.soon{padding:2.5rem 1.25rem 1.5rem}
-.classic .countdown small{font-size:clamp(.55rem,2.4vw,.66rem);letter-spacing:.12em;color:color-mix(in srgb,var(--text) 75%,transparent);opacity:1}
-.classic .today{color:var(--ink)}
-.classic .splash{color:#fff;background:#1f2a18}
-.classic .splash .splash-bg{position:absolute;inset:-20px;width:calc(100% + 40px);height:calc(100% + 40px);object-fit:cover;object-position:center 35%;filter:blur(6px)}
-.classic .splash .veil{background:rgba(15,22,10,.55)}
-.classic .splash .kicker{color:#fff;opacity:.95}
-.classic .splash h1{font-family:var(--title);text-shadow:0 2px 20px rgba(0,0,0,.35)}
-.classic .splash .amp{color:#F4C77A}
-.classic .day>h3,.classic .timeline .time,.classic .sign,.classic .ok h2,.classic summary:after{color:var(--ink)}
-.classic .badge{color:var(--ink);border-color:var(--ink)}
-.classic .head .rule{color:var(--primary)}
-.classic label.f{font-size:.8rem;letter-spacing:.14em;color:color-mix(in srgb,var(--text) 85%,transparent);font-weight:400}
-.classic .hint,.classic .swatches div,.classic .icard a{font-size:.9rem}
-.classic footer{color:color-mix(in srgb,var(--text) 80%,transparent);padding:3rem 1rem 5rem}
-.classic footer .names{font-family:var(--title)}
-.classic footer a{display:inline-block;font-size:.95rem;opacity:1;padding:.7rem 1rem;color:var(--text)}
 `
 
 // Feuille de style de l'espace mariés (sobre, indépendante du thème du site)

@@ -8,6 +8,7 @@ import {
 } from './db'
 import { Dashboard, Login, type Tab } from './pages/admin'
 import { Home, Thanks } from './pages/site'
+import { Accueil, ClassicThanks, Infos, Lieu, Programme, RsvpPage, Splash } from './pages/classic'
 
 type C = Context<{ Bindings: Env }>
 const app = new Hono<{ Bindings: Env }>()
@@ -35,8 +36,31 @@ app.get('/', async (c) => {
   const { key, events } = visibleEvents(w, c.req.query('k'))
   const token = c.req.query('modifier')
   const existing = token ? await getRsvpByToken(c.env.DB, token) : null
+  if (w.layout === 'classic') {
+    const k = key !== w.defaultProfile && w.profiles ? key : ''
+    if (token) return c.redirect(`/rsvp?${k ? `k=${k}&` : ''}modifier=${token}`)
+    return c.html(<Splash w={w} k={k} />)
+  }
   return c.html(<Home w={w} profileKey={key} visible={events} existing={existing} />)
 })
+
+// Site multi-pages (layout « classic »)
+const classicPage = (render: (w: WeddingConfig, k: string, events: WeddingConfig['events'], c: C) => unknown) => async (c: C) => {
+  const w = wedding(c)
+  if (w.layout !== 'classic') return c.redirect('/')
+  const { key, events } = visibleEvents(w, c.req.query('k'))
+  const k = key !== w.defaultProfile && w.profiles ? key : ''
+  return c.html((await render(w, k, events, c)) as string)
+}
+app.get('/accueil', classicPage((w, k, events) => <Accueil w={w} k={k} visible={events} />))
+app.get('/lieu', classicPage((w, k, events) => <Lieu w={w} k={k} visible={events} />))
+app.get('/programme', classicPage((w, k, events) => <Programme w={w} k={k} visible={events} />))
+app.get('/infos', classicPage((w, k) => <Infos w={w} k={k} />))
+app.get('/rsvp', classicPage(async (w, k, events, c) => {
+  const token = c.req.query('modifier')
+  const existing = token ? await getRsvpByToken(c.env.DB, token) : null
+  return <RsvpPage w={w} k={k} visible={events} existing={existing} />
+}))
 
 app.post('/rsvp', async (c) => {
   const w = wedding(c)
@@ -60,6 +84,7 @@ app.post('/rsvp', async (c) => {
       companions: text(body.companions, 300), dietary: text(body.dietary, 500), menu: text(body.menu, 80), message: text(body.message, 2000),
       created_at: '', updated_at: '',
     }
+    if (w.layout === 'classic') return c.html(<RsvpPage w={w} k={key !== w.defaultProfile && w.profiles ? key : ''} visible={events} error={error} existing={draft} />, 400)
     return c.html(<Home w={w} profileKey={key} visible={events} error={error} existing={draft} />, 400)
   }
   if (!prenom || !nom) return fail('Merci d’indiquer votre prénom et votre nom.')
@@ -93,6 +118,7 @@ app.get('/merci/:token', async (c) => {
   const rsvp = await getRsvpByToken(c.env.DB, c.req.param('token'))
   if (!rsvp) return c.redirect('/')
   const k = c.req.query('k') ?? ''
+  if (w.layout === 'classic') return c.html(<ClassicThanks w={w} rsvp={rsvp} events={w.events} k={k} />)
   return c.html(<Thanks w={w} rsvp={rsvp} events={w.events} k={k} />)
 })
 

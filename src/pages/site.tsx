@@ -13,11 +13,6 @@ const maps = (q: string) => ({
   embed: `https://maps.google.com/maps?q=${encodeURIComponent(q)}&z=14&output=embed`,
 })
 
-// Numéros de téléphone français cliquables (lien tel:)
-const withPhones = (s: string) =>
-  s.split(/((?:\+33\s?|0)[1-9](?:[\s.]?\d{2}){4})/).map((part, i) =>
-    i % 2 ? <a href={`tel:${part.replace(/[\s.]/g, '')}`}>{part}</a> : part)
-
 const Names = ({ w }: { w: WeddingConfig }) => (
   <>
     {w.partner1}
@@ -74,11 +69,10 @@ export function Home({ w, profileKey, visible, existing, error }: HomeProps) {
     ['faq', 'FAQ', !!w.faq?.length],
     ['rsvp', 'RSVP', true],
   ]
-  const classic = w.layout === 'classic'
   const hasBg = !!(w.media.heroImage || w.media.heroVideo)
   const k = profileKey !== w.defaultProfile ? profileKey : ''
   return (
-    <Page w={w} title={w.seo.title} bodyClass={classic ? 'classic' : hasBg ? 'on-image' : ''}>
+    <Page w={w} title={w.seo.title} bodyClass={hasBg ? 'on-image' : ''}>
       <div class="bgfix" aria-hidden="true">
         {w.media.heroImage && (
           <picture>
@@ -93,8 +87,7 @@ export function Home({ w, profileKey, visible, existing, error }: HomeProps) {
       {w.splash.enabled && (
         <div class="splash" id="splash">
           {w.media.splashVideo && <video src={w.media.splashVideo} muted playsinline loop autoplay></video>}
-          {classic && w.hero.photo && <img class="splash-bg" src={w.hero.photo} alt="" />}
-          {(w.media.splashVideo || hasBg || classic) && <div class="veil"></div>}
+          {(w.media.splashVideo || hasBg) && <div class="veil"></div>}
           <div class="inner">
             {w.splash.kicker && <p class="kicker">{w.splash.kicker}</p>}
             <h1><Names w={w} /></h1>
@@ -105,60 +98,32 @@ export function Home({ w, profileKey, visible, existing, error }: HomeProps) {
       )}
 
       <nav class="nav" id="nav">
-        <a class="mono" href="#accueil">{classic ? <Names w={w} /> : w.monogram ?? `${w.partner1[0]} & ${w.partner2[0]}`}</a>
+        <a class="mono" href="#accueil">{w.monogram ?? `${w.partner1[0]} & ${w.partner2[0]}`}</a>
         <button class="burger" type="button" aria-label="Menu" data-burger><Svg name="menu" /></button>
         <ul>
-          {classic && <li><a href="#accueil">Accueil</a></li>}
           {nav.filter(([, , on]) => on).map(([id, label]) => <li><a href={`#${id}`}>{label}</a></li>)}
         </ul>
       </nav>
 
-      {classic ? (
-        <>
-          <header class="chero" id="accueil">
-            {w.hero.photo && (
-              <div class="chero-photo">
-                <img src={w.hero.photo} alt={`${w.partner1} et ${w.partner2}`} style={w.hero.photoPosition ? `object-position:${w.hero.photoPosition}` : undefined} />
-              </div>
-            )}
-            <div class="chero-text">
-              <p class="kicker">{w.hero.kicker ?? `${w.dateLabel} · ${w.place}`}</p>
-              <h1><Names w={w} /></h1>
-            </div>
-          </header>
-          <section class="soon">
-            <p class="kicker">Le grand jour approche</p>
-            {w.hero.text && <p class="tagline">{w.hero.text}</p>}
-            <div class="date">{w.dateLabel}</div>
-            <div class="countdown" data-countdown={w.dateISO}>
-              {['jours', 'heures', 'minutes', 'secondes'].map((u, i) => (
-                <div><b data-u={i}>--</b><small>{u}</small></div>
-              ))}
-            </div>
-            <a class="btn" href="#rsvp">{w.hero.cta ?? "Répondre à l'invitation"}</a>
-          </section>
-        </>
-      ) : (
-        <header class={`hero${w.hero.photo ? ' with-photo' : ''}`} id="accueil">
-          {!hasBg && w.monogram && <div class="mono-bg" aria-hidden="true">{w.monogram}</div>}
-          {w.hero.photo && (
-            <figure class="hero-photo"><img src={w.hero.photo} alt={`${w.partner1} et ${w.partner2}`} style={w.hero.photoPosition ? `object-position:${w.hero.photoPosition}` : undefined} /></figure>
-          )}
-          <div class="hero-text">
-            {w.hero.kicker && <p class="kicker">{w.hero.kicker}</p>}
-            <h1><Names w={w} /></h1>
-            {w.hero.text && <p>{w.hero.text}</p>}
-            <div class="date">{w.dateLabel}</div>
-            <div class="place">{w.place}</div>
-            <div class="countdown" data-countdown={w.dateISO}>
-              {['jours', 'heures', 'minutes', 'secondes'].map((u, i) => (
-                <div style={w.theme.countdownColors ? `--c:${w.theme.countdownColors[i]}` : ''}><b data-u={i}>--</b><small>{u}</small></div>
-              ))}
-            </div>
-            <a class="btn" href="#rsvp">{w.hero.cta ?? "Répondre à l'invitation"}</a>
+      <header class={`hero${w.hero.photo ? ' with-photo' : ''}`} id="accueil">
+        {!hasBg && w.monogram && <div class="mono-bg" aria-hidden="true">{w.monogram}</div>}
+        {w.hero.photo && (
+          <figure class="hero-photo"><img src={w.hero.photo} alt={`${w.partner1} et ${w.partner2}`} style={w.hero.photoPosition ? `object-position:${w.hero.photoPosition}` : undefined} /></figure>
+        )}
+        <div class="hero-text">
+          {w.hero.kicker && <p class="kicker">{w.hero.kicker}</p>}
+          <h1><Names w={w} /></h1>
+          {w.hero.text && <p>{w.hero.text}</p>}
+          <div class="date">{w.dateLabel}</div>
+          <div class="place">{w.place}</div>
+          <div class="countdown" data-countdown={w.dateISO}>
+            {['jours', 'heures', 'minutes', 'secondes'].map((u, i) => (
+              <div style={w.theme.countdownColors ? `--c:${w.theme.countdownColors[i]}` : ''}><b data-u={i}>--</b><small>{u}</small></div>
+            ))}
           </div>
-        </header>
-      )}
+          <a class="btn" href="#rsvp">{w.hero.cta ?? "Répondre à l'invitation"}</a>
+        </div>
+      </header>
 
       <main>
         {w.quote && (
@@ -267,7 +232,7 @@ export function Home({ w, profileKey, visible, existing, error }: HomeProps) {
                 {w.hotels.map((h) => (
                   <div class="icard">
                     <span class="ic"><Svg name="bed" /></span>
-                    <div><h4>{h.name}</h4>{h.place && <p class="hint">{h.place}</p>}<p style="white-space:pre-line">{withPhones(h.text)}</p>{h.url && <a href={h.url} target="_blank" rel="noopener">Site de l'hôtel →</a>}</div>
+                    <div><h4>{h.name}</h4>{h.place && <p class="hint">{h.place}</p>}<p style="white-space:pre-line">{h.text}</p>{h.url && <a href={h.url} target="_blank" rel="noopener">Site de l'hôtel →</a>}</div>
                   </div>
                 ))}
               </div>

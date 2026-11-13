@@ -11,27 +11,15 @@
     "description": "Paul & Caroline se marient du 15 au 17 mai 2027 au Mas Aubrilha, Clermont-l'Hérault. Rejoignez-nous pour célébrer notre mariage.",
     "image": "https://paul-caroline-wedding.62z7h87vzm.workers.dev/partage.jpg"
   },
-  "theme": {
-    "background": "#FAF8F3",
-    "surface": "#FFFFFF",
-    "text": "#2A4A1D",
-    "primary": "#D2643A",
-    "accent": "#E1A93A",
-    "heroText": "#FFFFFF",
-    "fontTitle": "Cormorant Garamond",
-    "fontBody": "Inter",
-    "overlay": "linear-gradient(180deg, rgba(20,30,10,0.25), rgba(20,30,10,0.55))",
-    "accentInk": "#A86A12"
-  },
   "media": {},
   "splash": {
     "enabled": true,
     "kicker": "Nous nous marions"
   },
   "hero": {
-    "cta": "Répondre à l'invitation",
-    "text": "Entourés de nos familles et de nos amis, pour le plus beau jour de notre vie",
-    "photo": "/paul-caroline.jpg"
+    "kicker": "15 mai 2027 · Clermont-l'Hérault",
+    "photo": "/paul-caroline.jpg",
+    "photoPosition": "center 40%"
   },
   "quote": "Nous sommes ravis et émus de vous inviter à célébrer notre mariage sous le soleil du Languedoc, au cœur des oliviers du Mas Aubrilha. Votre présence rendra ce jour inoubliable.",
   "events": [
@@ -57,7 +45,7 @@
       "title": "Vin d'honneur & cocktail",
       "day": "Samedi 15 mai 2027",
       "time": "18h00",
-      "icon": "glass",
+      "icon": "utensils",
       "note": "Apéritif dînatoire aux saveurs méditerranéennes, musique live et retrouvailles.",
       "noRsvp": true
     },
@@ -82,7 +70,7 @@
       "title": "Après-midi piscine & détente",
       "day": "Dimanche 16 mai 2027",
       "time": "Après-midi",
-      "icon": "sun",
+      "icon": "waves",
       "note": "Baignade, transats et farniente au bord de la piscine.",
       "noRsvp": true
     },
@@ -91,7 +79,7 @@
       "title": "Soirée pizza",
       "day": "Dimanche 16 mai 2027",
       "time": "18h00",
-      "icon": "food",
+      "icon": "pizza",
       "note": "Soirée pizza détendue pour clôturer le weekend tous ensemble."
     }
   ],
@@ -199,5 +187,26 @@
     "maxPersons": 10,
     "thanks": "Nous avons hâte de partager ce moment avec vous. En attendant, préparez vos plus belles tenues colorées !"
   },
-  "layout": "classic"
+  "layout": "classic",
+  "theme": {
+    "background": "#FAF8F5",
+    "surface": "#FDFDFC",
+    "text": "#2A481E",
+    "primary": "#D06139",
+    "accent": "#E2A83C",
+    "heroText": "#FFFFFF",
+    "fontTitle": "Cormorant Garamond",
+    "fontBody": "Inter"
+  },
+  "classic": {
+    "weddingDay": "15 mai 2027",
+    "venueLine": "Mas Aubrilha · Clermont-l'Hérault",
+    "footerPlace": "Mas Aubrilha — Clermont-l'Hérault",
+    "venueImage": "/mas-aubrilha.jpg",
+    "banner": {
+      "image": "/oliviers.jpg",
+      "text": "Entourés de nos familles et de nos amis, pour le plus beau jour de notre vie"
+    },
+    "scheduleNote": "Les horaires restent à confirmer. Vous retrouverez ici même la version définitive quelques semaines avant le jour J."
+  }
 }
