@@ -55,6 +55,7 @@ export type WeddingConfig = {
   media: {
     heroImage?: string
     heroImageMobile?: string
+    heroPosition?: string // object-position CSS de l'image de fond, ex. "center 30%"
     heroVideo?: string
     splashVideo?: string
     music?: string[] // une ou plusieurs pistes enchaînées

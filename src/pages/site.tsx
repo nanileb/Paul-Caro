@@ -77,7 +77,7 @@ export function Home({ w, profileKey, visible, existing, error }: HomeProps) {
         {w.media.heroImage && (
           <picture>
             {w.media.heroImageMobile && <source media="(max-width: 768px), (orientation: portrait)" srcset={w.media.heroImageMobile} />}
-            <img src={w.media.heroImage} alt="" />
+            <img src={w.media.heroImage} alt="" style={w.media.heroPosition ? `object-position:${w.media.heroPosition}` : undefined} />
           </picture>
         )}
         {w.media.heroVideo && <video data-bgvideo src={w.media.heroVideo} muted playsinline loop autoplay preload="auto"></video>}
@@ -206,7 +206,7 @@ export function Home({ w, profileKey, visible, existing, error }: HomeProps) {
                     <span class="ic"><Svg name="shirt" /></span>
                     <div>
                       <h4>Dress code</h4>
-                      <p>{w.infos.dressCode.text}</p>
+                      <p style="white-space:pre-line">{w.infos.dressCode.text}</p>
                       {w.infos.dressCode.swatches && (
                         <div class="swatches">{w.infos.dressCode.swatches.map((s) => <div><span style={`background:${s.hex}`}></span>{s.name}</div>)}</div>
                       )}
@@ -227,7 +227,7 @@ export function Home({ w, profileKey, visible, existing, error }: HomeProps) {
                 {w.hotels.map((h) => (
                   <div class="icard">
                     <span class="ic"><Svg name="bed" /></span>
-                    <div><h4>{h.name}</h4>{h.place && <p class="hint">{h.place}</p>}<p>{h.text}</p>{h.url && <a href={h.url} target="_blank" rel="noopener">Réserver →</a>}</div>
+                    <div><h4>{h.name}</h4>{h.place && <p class="hint">{h.place}</p>}<p style="white-space:pre-line">{h.text}</p>{h.url && <a href={h.url} target="_blank" rel="noopener">Site de l'hôtel →</a>}</div>
                   </div>
                 ))}
               </div>
@@ -340,7 +340,7 @@ export function Thanks({ w, rsvp, events, k }: { w: WeddingConfig; rsvp: Rsvp; e
   return (
     <Page w={w} title={`Merci · ${w.seo.title}`}>
       <div class="bgfix" aria-hidden="true">
-        {w.media.heroImage && <img src={w.media.heroImage} alt="" />}
+        {w.media.heroImage && <img src={w.media.heroImage} alt="" style={w.media.heroPosition ? `object-position:${w.media.heroPosition}` : undefined} />}
         {w.media.heroImage && <div class="veil"></div>}
       </div>
       <main>

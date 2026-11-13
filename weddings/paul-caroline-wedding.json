@@ -4,12 +4,12 @@
   "partner2": "Caroline",
   "monogram": "P & C",
   "dateISO": "2027-05-15T15:00:00+02:00",
-  "dateLabel": "15 mai 2027",
+  "dateLabel": "Du samedi 15 au lundi 17 mai 2027",
   "place": "Clermont-l'Hérault",
   "seo": {
     "title": "Paul & Caroline - Wedding",
-    "description": "Paul & Caroline se marient le 15 mai 2027 au Mas Aubrilha, Clermont-l'Hérault. Rejoignez-nous pour célébrer notre mariage sous le soleil du Languedoc.",
-    "image": "https://media.base44.com/images/public/6a9d39a0d9b4b358678e11a4/341d5141a_Drone-Ops-20240928-DJI_0647.jpg"
+    "description": "Paul & Caroline se marient du 15 au 17 mai 2027 au Mas Aubrilha, Clermont-l'Hérault. Rejoignez-nous pour célébrer notre mariage.",
+    "image": "https://paul-caroline-wedding.62z7h87vzm.workers.dev/paul-caroline.jpg"
   },
   "theme": {
     "background": "#FAF8F3",
@@ -23,15 +23,17 @@
     "overlay": "linear-gradient(180deg, rgba(20,30,10,0.25), rgba(20,30,10,0.55))"
   },
   "media": {
-    "heroImage": "https://media.base44.com/images/public/6a9d39a0d9b4b358678e11a4/341d5141a_Drone-Ops-20240928-DJI_0647.jpg"
+    "heroImage": "/paul-caroline.jpg",
+    "heroPosition": "center 30%"
   },
   "splash": {
     "enabled": true,
     "kicker": "Nous nous marions"
   },
   "hero": {
-    "kicker": "15 mai 2027 · Clermont-l'Hérault",
-    "cta": "Répondre à l'invitation"
+    "kicker": "Nous nous marions",
+    "cta": "Répondre à l'invitation",
+    "text": "Entourés de nos familles et de nos amis, pour le plus beau jour de notre vie"
   },
   "quote": "Nous sommes ravis et émus de vous inviter à célébrer notre mariage sous le soleil du Languedoc, au cœur des oliviers du Mas Aubrilha. Votre présence rendra ce jour inoubliable.",
   "events": [
@@ -71,19 +73,28 @@
     },
     {
       "key": "repas_dimanche",
-      "title": "Repas de midi",
+      "title": "Repas",
       "day": "Dimanche 16 mai 2027",
       "time": "12h30",
       "icon": "sun",
-      "note": "Brunch convivial et repas de famille pour prolonger la fête en douceur."
+      "note": "Un repas convivial pour prolonger la fête en douceur."
+    },
+    {
+      "key": "piscine_dimanche",
+      "title": "Après-midi piscine & détente",
+      "day": "Dimanche 16 mai 2027",
+      "time": "Après-midi",
+      "icon": "sun",
+      "note": "Baignade, transats et farniente au bord de la piscine.",
+      "noRsvp": true
     },
     {
       "key": "soiree_dimanche",
-      "title": "Soirée",
+      "title": "Soirée pizza",
       "day": "Dimanche 16 mai 2027",
       "time": "18h00",
-      "icon": "music",
-      "note": "Dernière soirée détendue pour clôturer le weekend tous ensemble."
+      "icon": "food",
+      "note": "Soirée pizza détendue pour clôturer le weekend tous ensemble."
     }
   ],
   "programme": {
@@ -96,7 +107,7 @@
       "key": "mas",
       "label": "Le lieu",
       "name": "Mas Aubrilha",
-      "address": "Chemin du Mas de Siau, 34800 Clermont-l'Hérault",
+      "address": "Chemin de la Pompe, 34800 Clermont-l'Hérault",
       "description": "Niché au milieu des oliviers, le Mas Aubrilha est un domaine de caractère qui nous a tout de suite fait craquer. Nous y célébrerons l'ensemble du weekend, cérémonie, repas et soirée compris."
     }
   ],
@@ -124,7 +135,7 @@
   ],
   "infos": {
     "dressCode": {
-      "text": "Nous vous invitons à porter des tenues colorées et estivales, dans l'esprit méditerranéen de la journée. Évitez le noir : place aux terracotta, ocres, verts olive, bleus et blancs cassés. Prévoyez des chaussures confortables : une partie de la journée se déroulera en extérieur, sur herbe et gravier.",
+      "text": "Nous vous invitons à porter des tenues colorées et estivales le samedi, le jour du mariage. Évitez le noir et le bleu clair.\nPour le dimanche, prévoyez votre maillot de bain, serviettes et tongs pour la piscine, ainsi que la tenue de votre choix.",
       "swatches": [
         {
           "name": "Terracotta",
@@ -150,7 +161,7 @@
     },
     "blocks": [
       {
-        "title": "Enfants & garde",
+        "title": "Enfants",
         "text": "Aucune nounou ni garde d'enfants ne sera assurée sur place. Si vous venez avec vos enfants, merci d'organiser vous-même leur accompagnement en amont."
       }
     ]
@@ -158,8 +169,9 @@
   "hotels": [
     {
       "name": "Brit Hôtel",
-      "place": "Clermont-l'Hérault et environs",
-      "text": "Hôtel partenaire — mentionnez le mariage Caroline & Paul lors de votre réservation."
+      "place": "Clermont-l'Hérault",
+      "text": "Hôtel partenaire privatisé pour l'événement.\n30 chambres (18 chambres doubles dont 2 PMR, 9 chambres triples et 3 chambres familiales de 4 places) pour un total de 75 places.\nPas de lits d'appoint. Possibilité de mettre un lit bébé jusqu'à 2 ans.\nPour réserver, les appeler au 04 48 54 00 30 en mentionnant le mariage de Caroline & Paul.",
+      "url": "https://clermont-herault.brithotel.com/"
     },
     {
       "name": "Hôtel Le Sarac",
@@ -172,10 +184,6 @@
     {
       "q": "Comment réserver ma chambre ?",
       "a": "Contactez directement l'un des deux hôtels partenaires en mentionnant notre mariage pour bénéficier de conditions préférentielles, dans la limite des disponibilités."
-    },
-    {
-      "q": "Y a-t-il une navette depuis Montpellier ?",
-      "a": "Aucune navette n'est prévue pour l'instant. Si plusieurs invités arrivent en train, nous étudierons la possibilité d'organiser un transport collectif — n'hésitez pas à nous le signaler dans votre RSVP."
     },
     {
       "q": "Puis-je venir avec mes enfants ?",
