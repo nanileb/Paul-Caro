@@ -55,13 +55,12 @@ export type WeddingConfig = {
   media: {
     heroImage?: string
     heroImageMobile?: string
-    heroPosition?: string // object-position CSS de l'image de fond, ex. "center 30%"
     heroVideo?: string
     splashVideo?: string
     music?: string[] // une ou plusieurs pistes enchaînées
   }
   splash: { enabled: boolean; kicker?: string; text?: string }
-  hero: { kicker?: string; text?: string; cta?: string }
+  hero: { kicker?: string; text?: string; cta?: string; photo?: string; photoPosition?: string } // photo : portrait encadré dans l'en-tête
   story?: { title: string; paragraphs: string[]; signature?: string }
   quote?: string
   events: WeddingEvent[]

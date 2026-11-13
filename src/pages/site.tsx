@@ -77,7 +77,7 @@ export function Home({ w, profileKey, visible, existing, error }: HomeProps) {
         {w.media.heroImage && (
           <picture>
             {w.media.heroImageMobile && <source media="(max-width: 768px), (orientation: portrait)" srcset={w.media.heroImageMobile} />}
-            <img src={w.media.heroImage} alt="" style={w.media.heroPosition ? `object-position:${w.media.heroPosition}` : undefined} />
+            <img src={w.media.heroImage} alt="" />
           </picture>
         )}
         {w.media.heroVideo && <video data-bgvideo src={w.media.heroVideo} muted playsinline loop autoplay preload="auto"></video>}
@@ -105,19 +105,24 @@ export function Home({ w, profileKey, visible, existing, error }: HomeProps) {
         </ul>
       </nav>
 
-      <header class="hero" id="accueil">
+      <header class={`hero${w.hero.photo ? ' with-photo' : ''}`} id="accueil">
         {!hasBg && w.monogram && <div class="mono-bg" aria-hidden="true">{w.monogram}</div>}
-        {w.hero.kicker && <p class="kicker">{w.hero.kicker}</p>}
-        <h1><Names w={w} /></h1>
-        {w.hero.text && <p>{w.hero.text}</p>}
-        <div class="date">{w.dateLabel}</div>
-        <div class="place">{w.place}</div>
-        <div class="countdown" data-countdown={w.dateISO}>
-          {['jours', 'heures', 'minutes', 'secondes'].map((u, i) => (
-            <div style={w.theme.countdownColors ? `--c:${w.theme.countdownColors[i]}` : ''}><b data-u={i}>--</b><small>{u}</small></div>
-          ))}
+        {w.hero.photo && (
+          <figure class="hero-photo"><img src={w.hero.photo} alt={`${w.partner1} et ${w.partner2}`} style={w.hero.photoPosition ? `object-position:${w.hero.photoPosition}` : undefined} /></figure>
+        )}
+        <div class="hero-text">
+          {w.hero.kicker && <p class="kicker">{w.hero.kicker}</p>}
+          <h1><Names w={w} /></h1>
+          {w.hero.text && <p>{w.hero.text}</p>}
+          <div class="date">{w.dateLabel}</div>
+          <div class="place">{w.place}</div>
+          <div class="countdown" data-countdown={w.dateISO}>
+            {['jours', 'heures', 'minutes', 'secondes'].map((u, i) => (
+              <div style={w.theme.countdownColors ? `--c:${w.theme.countdownColors[i]}` : ''}><b data-u={i}>--</b><small>{u}</small></div>
+            ))}
+          </div>
+          <a class="btn" href="#rsvp">{w.hero.cta ?? "Répondre à l'invitation"}</a>
         </div>
-        <a class="btn" href="#rsvp">{w.hero.cta ?? "Répondre à l'invitation"}</a>
       </header>
 
       <main>
@@ -340,7 +345,7 @@ export function Thanks({ w, rsvp, events, k }: { w: WeddingConfig; rsvp: Rsvp; e
   return (
     <Page w={w} title={`Merci · ${w.seo.title}`}>
       <div class="bgfix" aria-hidden="true">
-        {w.media.heroImage && <img src={w.media.heroImage} alt="" style={w.media.heroPosition ? `object-position:${w.media.heroPosition}` : undefined} />}
+        {w.media.heroImage && <img src={w.media.heroImage} alt="" />}
         {w.media.heroImage && <div class="veil"></div>}
       </div>
       <main>

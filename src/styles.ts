@@ -45,6 +45,10 @@ a{color:inherit}img{max-width:100%}
   .nav.open ul{display:flex}.nav ul a{display:block;padding:.85rem 1rem;font-size:.85rem}}
 /* Accueil */
 .hero{min-height:100svh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--hero);padding:6rem 1.25rem 4rem;position:relative}
+.hero.with-photo{gap:1.6rem}
+.hero-photo{margin:0;width:min(68vw,380px);aspect-ratio:4/5;border-radius:999px 999px 28px 28px;overflow:hidden;border:4px solid color-mix(in srgb,var(--hero) 85%,transparent);box-shadow:0 18px 50px rgba(0,0,0,.35)}
+.hero-photo img{width:100%;height:100%;object-fit:cover;object-position:center 25%;display:block}
+@media (min-width:900px){.hero.with-photo{flex-direction:row-reverse;gap:clamp(2.5rem,6vw,6rem)}.hero.with-photo .hero-photo{width:min(30vw,420px)}}
 .hero .mono-bg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--script);font-size:clamp(10rem,40vw,26rem);opacity:.05;pointer-events:none;white-space:nowrap}
 .hero h1{font-family:var(--script);font-size:clamp(3.6rem,13vw,8.5rem);margin:.2rem 0 .4rem;text-shadow:0 2px 24px rgba(0,0,0,.25)}
 .hero .date{font-family:var(--title);font-size:clamp(1.3rem,3.5vw,1.9rem);font-style:italic}

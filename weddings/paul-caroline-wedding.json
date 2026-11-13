@@ -9,7 +9,7 @@
   "seo": {
     "title": "Paul & Caroline - Wedding",
     "description": "Paul & Caroline se marient du 15 au 17 mai 2027 au Mas Aubrilha, Clermont-l'Hérault. Rejoignez-nous pour célébrer notre mariage.",
-    "image": "https://paul-caroline-wedding.62z7h87vzm.workers.dev/paul-caroline.jpg"
+    "image": "https://media.base44.com/images/public/6a9d39a0d9b4b358678e11a4/341d5141a_Drone-Ops-20240928-DJI_0647.jpg"
   },
   "theme": {
     "background": "#FAF8F3",
@@ -23,8 +23,7 @@
     "overlay": "linear-gradient(180deg, rgba(20,30,10,0.25), rgba(20,30,10,0.55))"
   },
   "media": {
-    "heroImage": "/paul-caroline.jpg",
-    "heroPosition": "center 30%"
+    "heroImage": "https://media.base44.com/images/public/6a9d39a0d9b4b358678e11a4/341d5141a_Drone-Ops-20240928-DJI_0647.jpg"
   },
   "splash": {
     "enabled": true,
@@ -33,7 +32,8 @@
   "hero": {
     "kicker": "Nous nous marions",
     "cta": "Répondre à l'invitation",
-    "text": "Entourés de nos familles et de nos amis, pour le plus beau jour de notre vie"
+    "text": "Entourés de nos familles et de nos amis, pour le plus beau jour de notre vie",
+    "photo": "/paul-caroline.jpg"
   },
   "quote": "Nous sommes ravis et émus de vous inviter à célébrer notre mariage sous le soleil du Languedoc, au cœur des oliviers du Mas Aubrilha. Votre présence rendra ce jour inoubliable.",
   "events": [
