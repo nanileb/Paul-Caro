@@ -102,6 +102,13 @@ main{flex:1}
 .card a.web:hover{text-decoration:underline}
 .card .t a{color:var(--terra-deep);font-weight:500}
 .card .pill{margin-top:.9rem;font-size:.78rem}
+.card.hotel{display:flex;flex-direction:column}.card.hotel .pill{align-self:flex-start;margin-top:.5rem}
+.card.hotel .lead{font-family:var(--title);font-style:italic;font-size:1.12rem;line-height:1.45;color:var(--olive);margin-top:1rem}
+.lines{list-style:none;margin:1.1rem 0 0;padding:0;display:grid;gap:.85rem;border-top:1px solid var(--mist);padding-top:1.1rem}
+.lines li{display:flex;gap:.75rem;align-items:flex-start;font-size:.92rem;line-height:1.6;color:var(--olive-soft)}
+.lines .li-ico{flex:none;width:30px;height:30px;border-radius:50%;background:rgba(208,97,57,.1);color:var(--terra);display:flex;align-items:center;justify-content:center;margin-top:-.05rem}
+.lines a{color:var(--terra-deep);font-weight:500;white-space:nowrap}
+.card.hotel a.web{margin-top:auto;padding-top:1.1rem}
 .sh{display:flex;align-items:center;gap:1rem;margin-bottom:2rem}.sh svg{color:var(--terra);flex:none}
 .sh h2{font-size:clamp(1.6rem,4vw,1.9rem);font-weight:400;white-space:nowrap}.sh:after{content:"";height:1px;flex:1;background:var(--mist)}
 .note{margin-top:1.5rem;text-align:center;font-size:.9rem;color:var(--muted)}
@@ -432,11 +439,16 @@ export function Infos({ w, k }: { w: WeddingConfig; k: string }) {
             <div class="sh"><Svg name="hotel" size={20} /><h2>Hôtels à proximité</h2></div>
             <div class="cards two">
               {w.hotels.map((h) => (
-                <div class="card reveal">
+                <div class="card hotel reveal">
                   <h3>{h.name}</h3>
-                  <p class="t">{withPhones(h.text)}</p>
+                  {h.place && <span class="pill">{h.place}</span>}
+                  {h.text && <p class="t lead">{withPhones(h.text)}</p>}
+                  {!!h.lines?.length && (
+                    <ul class="lines">
+                      {h.lines.map((l) => <li><span class="li-ico"><Svg name={l.icon} size={16} /></span><span>{withPhones(l.text)}</span></li>)}
+                    </ul>
+                  )}
                   {h.url && <a class="web" href={h.url} target="_blank" rel="noopener">Site de l'hôtel →</a>}
-                  {h.place && <div><span class="pill">{h.place}</span></div>}
                 </div>
               ))}
             </div>

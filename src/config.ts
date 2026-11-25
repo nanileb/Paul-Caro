@@ -72,7 +72,7 @@ export type WeddingConfig = {
     dressCode?: { text: string; swatches?: { name: string; hex: string }[] }
     blocks?: { title: string; text: string }[]
   }
-  hotels?: { name: string; place?: string; text: string; url?: string }[]
+  hotels?: { name: string; place?: string; text?: string; url?: string; lines?: { icon: string; text: string }[] }[] // lines : infos en lignes à icônes (layout classic)
   hotelsNote?: string
   faq?: { q: string; a: string }[]
   rsvp: {
