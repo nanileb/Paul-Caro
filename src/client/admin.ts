@@ -26,45 +26,82 @@ $$('[data-edit]').forEach((b) => b.addEventListener('click', () => {
   f.id.value = v.id; f.nom.value = v.nom; f.prenom.value = v.prenom; f.nombre_personnes.value = v.nb; $('[data-title]', d).textContent = "Modifier l'invité"; d.showModal();
 }));
 
-// Import Excel : lecture dans le navigateur, aperçu, puis envoi des lignes valides
+// Retour visuel pendant l'enregistrement (après la confirmation éventuelle)
+document.addEventListener('submit', (e) => {
+  if (e.defaultPrevented) return;
+  const b = e.target.querySelector('button[data-busy]');
+  if (b) setTimeout(() => { b.disabled = true; b.textContent = b.dataset.busy; });
+});
+
+// Import Excel : lecture dans le navigateur (rien n'est envoyé à un service externe), aperçu, puis envoi des lignes retenues
 const file = $('[data-import-file]');
 if (file) {
   let rows = [];
-  const go = $('[data-import-go]'), out = $('[data-import-preview]');
-  const loadXlsx = () => window.XLSX ? Promise.resolve() : new Promise((ok, ko) => { const s = document.createElement('script'); s.src = 'https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js'; s.onload = ok; s.onerror = ko; document.head.appendChild(s); });
-  const cap = (v) => { const s = String(v ?? '').trim(); return s ? s[0].toUpperCase() + s.slice(1) : ''; };
-  const num = (v) => { const n = parseFloat(String(v ?? '').replace(',', '.')); return isFinite(n) && n >= 1 ? Math.round(n) : 1; };
-  const isNum = (v) => v !== '' && isFinite(parseFloat(String(v ?? '').replace(',', '.')));
+  const dlg = $('#dlg-import'), go = $('[data-import-go]'), out = $('[data-import-preview]');
+  const norm = (v) => String(v ?? '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/\\s+/g, ' ').trim();
+  const existing = JSON.parse(dlg.dataset.existing || '[]');
+  const findExisting = (nom, prenom) => { const a = norm(nom), b = norm(prenom); return existing.find((x) => (x[0] === a && x[1] === b) || (x[0] === b && x[1] === a)); };
+  const loadXlsx = () => window.XLSX ? Promise.resolve() : new Promise((ok, ko) => { const s = document.createElement('script'); s.src = 'https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js'; s.onload = ok; s.onerror = () => ko(new Error('le module de lecture Excel n’a pas pu être chargé (vérifiez votre connexion)')); document.head.appendChild(s); });
+  const clean = (v) => String(v ?? '').replace(/\\s+/g, ' ').trim();
+  const isNum = (v) => clean(v) !== '' && isFinite(parseFloat(clean(v).replace(',', '.')));
+  const num = (v) => { const n = Math.round(parseFloat(clean(v).replace(',', '.'))); return isFinite(n) && n >= 1 ? Math.min(n, 50) : 1; };
+  const reset = () => { rows = []; out.innerHTML = ''; go.disabled = true; go.textContent = "Confirmer l'import"; };
+  $('[data-open="import"]').addEventListener('click', () => { file.value = ''; reset(); });
   file.addEventListener('change', async () => {
-    out.innerHTML = '<p class="muted">Lecture du fichier…</p>'; go.disabled = true;
+    reset();
+    const f = file.files[0]; if (!f) return;
+    out.innerHTML = '<p class="muted">Lecture du fichier…</p>';
     try {
+      if (!/\\.(xlsx|xls|csv)$/i.test(f.name)) throw new Error('choisissez un fichier Excel (.xlsx ou .xls)');
       await loadXlsx();
-      // CSV : on décode nous-mêmes (UTF-8, sinon Windows-1252) et on garde les valeurs en texte (« 2,5 » ≠ 25)
-      const f = file.files[0], buf = await f.arrayBuffer();
+      const buf = await f.arrayBuffer();
       let wb;
-      if (/\\.(csv|txt)$/i.test(f.name)) {
+      if (/\\.csv$/i.test(f.name)) {
         let txt; try { txt = new TextDecoder('utf-8', { fatal: true }).decode(buf); } catch { txt = new TextDecoder('windows-1252').decode(buf); }
-        wb = XLSX.read(txt.replace(/^\\uFEFF/, ''), { type: 'string', raw: true });
-      } else wb = XLSX.read(buf, { type: 'array' });
-      const m = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { header: 1, raw: true, defval: '' }).filter((r) => r.some((c) => String(c).trim()));
-      if (!m.length) throw new Error('Le fichier est vide.');
-      const start = isNum(m[0][2]) ? 0 : 1, ignored = [];
-      rows = [];
-      m.slice(start).forEach((l, i) => { const nom = cap(l[0]), prenom = cap(l[1]);
-        if (!nom || !prenom) ignored.push('Ligne ' + (i + start + 1) + ' : ' + (!nom && !prenom ? 'nom et prénom manquants' : !nom ? 'nom manquant' : 'prénom manquant'));
-        else rows.push({ nom, prenom, nombre_personnes: num(l[2]) }); });
-      out.innerHTML = '<p><b>' + rows.length + '</b> ligne(s) valide(s), <b>' + ignored.length + '</b> ignorée(s).</p>' +
-        (ignored.length ? '<p class="muted">' + ignored.slice(0, 8).join('<br>') + (ignored.length > 8 ? '<br>…' : '') + '</p>' : '') +
-        '<div class="scroll" style="max-height:240px"><table><tr><th>Nom</th><th>Prénom</th><th class="c">Pers.</th></tr>' +
-        rows.map((r) => '<tr><td>' + esc(r.nom) + '</td><td>' + esc(r.prenom) + '</td><td class="c">' + r.nombre_personnes + '</td></tr>').join('') + '</table></div>';
+        wb = XLSX.read(txt.replace(/^﻿/, ''), { type: 'string', raw: true });
+      } else {
+        try { wb = XLSX.read(buf, { type: 'array' }); } catch { throw new Error('le fichier est illisible ou protégé par un mot de passe'); }
+      }
+      if (!wb.SheetNames.length) throw new Error('le fichier ne contient aucun onglet');
+      const all = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { header: 1, raw: true, defval: '' });
+      const m = all.map((r, i) => ({ r, n: i + 1 })).filter(({ r }) => r.some((c) => clean(c)));
+      if (!m.length) throw new Error('le premier onglet est vide');
+      // En-têtes : du texte en colonne C (pas un nombre), ou « Nom / Prénom » en A-B avec C vide
+      const h = m[0].r, headerWords = /^(nom|prenom|nom de famille|name|first ?name|last ?name|invite|invites)$/;
+      const isHeader = (clean(h[2]) !== '' && !isNum(h[2])) || (clean(h[2]) === '' && (headerWords.test(norm(h[0])) || headerWords.test(norm(h[1]))));
+      const ignored = [], seen = new Set();
+      let nNew = 0, nUpd = 0;
+      for (const { r, n } of m.slice(isHeader ? 1 : 0)) {
+        const nom = clean(r[0]), prenom = clean(r[1]);
+        if (!nom || !prenom) { ignored.push('Ligne ' + n + ' : ' + (!nom && !prenom ? 'nom et prénom manquants' : !nom ? 'nom manquant' : 'prénom manquant')); continue; }
+        const key = [norm(nom), norm(prenom)].sort().join('|');
+        if (seen.has(key)) { ignored.push('Ligne ' + n + ' : ' + nom + ' ' + prenom + ' apparaît plusieurs fois dans le fichier'); continue; }
+        seen.add(key);
+        const nb = num(r[2]), ex = findExisting(nom, prenom);
+        const action = ex ? 'Mis à jour' + (ex[2] !== nb ? ' (' + ex[2] + ' → ' + nb + ' pers.)' : ' (inchangé)') : 'Nouveau';
+        ex ? nUpd++ : nNew++;
+        rows.push({ nom, prenom, nombre_personnes: nb, action, invalid: clean(r[2]) !== '' && !isNum(r[2]) });
+      }
+      out.innerHTML = (isHeader ? '<p class="muted">Ligne d’en-têtes détectée et ignorée.</p>' : '') +
+        '<p><b>' + rows.length + '</b> ligne(s) valide(s) : <b>' + nNew + '</b> nouveau(x) invité(s), <b>' + nUpd + '</b> mis à jour, <b>' + ignored.length + '</b> ignorée(s).</p>' +
+        (nUpd ? '<p class="muted">Les invités déjà dans la liste ne sont pas recréés : seul leur nombre de personnes est mis à jour.</p>' : '') +
+        (ignored.length ? '<details><summary>Lignes ignorées ou en erreur (' + ignored.length + ')</summary><p class="no">' + ignored.map(esc).join('<br>') + '</p></details>' : '') +
+        '<div class="scroll" style="max-height:280px;overflow-y:auto"><table><tr><th>Nom</th><th>Prénom</th><th class="c">Nombre de personnes</th><th>Action</th></tr>' +
+        rows.map((r) => '<tr><td>' + esc(r.nom) + '</td><td>' + esc(r.prenom) + '</td><td class="c">' + r.nombre_personnes + (r.invalid ? ' <span class="muted" title="Valeur invalide en colonne C, 1 par défaut">*</span>' : '') + '</td><td>' + (r.action === 'Nouveau' ? '<span class="pill">Nouveau</span>' : '<span class="pill wait">' + esc(r.action) + '</span>') + '</td></tr>').join('') + '</table></div>';
       go.disabled = !rows.length;
-    } catch (e) { out.innerHTML = '<p class="no">Impossible de lire ce fichier : ' + esc(e.message || 'format non reconnu') + '</p>'; }
+    } catch (e) { rows = []; out.innerHTML = '<p class="no">Impossible de lire ce fichier : ' + esc((e && e.message) || 'format non reconnu') + '.</p>'; }
   });
   go.addEventListener('click', async () => {
     go.disabled = true; go.textContent = 'Import en cours…';
-    const r = await fetch('/espace-maries/invites/import', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(rows) });
-    const j = await r.json().catch(() => ({}));
-    location.href = '/espace-maries?tab=invites&m=' + encodeURIComponent(r.ok ? 'Import terminé : ' + j.created + ' ajouté(s), ' + j.updated + ' mis à jour, ' + j.skipped + ' ignoré(s).' : "L'import a échoué.");
+    try {
+      const r = await fetch('/espace-maries/invites/import', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(rows.map(({ nom, prenom, nombre_personnes }) => ({ nom, prenom, nombre_personnes }))) });
+      if (r.redirected || !r.ok) throw new Error(r.redirected ? 'session expirée, reconnectez-vous' : 'erreur du serveur');
+      const j = await r.json();
+      location.href = '/espace-maries?tab=invites&m=' + encodeURIComponent('Import terminé : ' + j.created + ' invité(s) ajouté(s), ' + j.updated + ' mis à jour, ' + j.skipped + ' ignoré(s).');
+    } catch (e) {
+      out.insertAdjacentHTML('afterbegin', '<p class="no">L’import a échoué (' + esc(e.message) + '). Aucune modification n’a été perdue, vous pouvez réessayer.</p>');
+      go.disabled = false; go.textContent = "Confirmer l'import";
+    }
   });
 }
 function esc(s) { return String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]); }
