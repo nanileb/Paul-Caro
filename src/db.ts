@@ -87,11 +87,32 @@ export async function matchInvite(db: D1Database, rsvp: Rsvp) {
     return
   }
   const hit = matches[0]
-  if (!hit || hit.ambigu || (hit.statut === 'repondu' && hit.rsvp_id !== rsvp.id)) return
+  if (!hit || hit.ambigu || hit.statut !== 'en_attente') return
   await db.prepare("UPDATE invites SET statut = 'repondu', date_reponse = datetime('now'), rsvp_id = ? WHERE id = ?").bind(rsvp.id, hit.id).run()
 }
 
 export type ImportRow = { nom: string; prenom: string; nombre_personnes: number }
+
+// Rapproche toutes les réponses déjà reçues des fiches encore en attente (après un import ou un ajout manuel).
+// Tout est calculé en mémoire puis écrit en un seul lot. Les fiches déjà traitées (manuellement ou non) ne bougent pas.
+export async function rematchAll(db: D1Database) {
+  const [invites, rsvps] = await Promise.all([listInvites(db), listRsvps(db)])
+  const linked = new Set(invites.map((i) => i.rsvp_id).filter(Boolean))
+  const stmts: D1PreparedStatement[] = []
+  for (const r of [...rsvps].reverse()) {
+    if (linked.has(r.id)) continue
+    const m = invites.filter((i) => sameName(i, r.nom, r.prenom))
+    if (m.length > 1) {
+      for (const i of m) if (!i.ambigu) { i.ambigu = 1; stmts.push(db.prepare('UPDATE invites SET ambigu = 1 WHERE id = ?').bind(i.id)) }
+      continue
+    }
+    const hit = m[0]
+    if (!hit || hit.ambigu || hit.statut !== 'en_attente') continue
+    hit.statut = 'repondu'; hit.rsvp_id = r.id; linked.add(r.id)
+    stmts.push(db.prepare("UPDATE invites SET statut = 'repondu', date_reponse = ?, rsvp_id = ? WHERE id = ?").bind(r.created_at, r.id, hit.id))
+  }
+  if (stmts.length) await db.batch(stmts)
+}
 
 export async function importInvites(db: D1Database, rows: ImportRow[]) {
   const existing = await listInvites(db)
@@ -99,18 +120,19 @@ export async function importInvites(db: D1Database, rows: ImportRow[]) {
   const stmts: D1PreparedStatement[] = []
   let created = 0, updated = 0, skipped = 0
   for (const row of rows.slice(0, 2000)) {
-    const nom = String(row.nom ?? '').trim(), prenom = String(row.prenom ?? '').trim()
-    const nb = Math.max(1, Math.round(Number(row.nombre_personnes) || 1))
+    const nom = String(row.nom ?? '').replace(/\s+/g, ' ').trim().slice(0, 80), prenom = String(row.prenom ?? '').replace(/\s+/g, ' ').trim().slice(0, 80)
+    const nb = Math.min(50, Math.max(1, Math.round(Number(row.nombre_personnes) || 1)))
     if (!nom || !prenom) { skipped++; continue }
+    // Doublon dans le fichier lui-même (dans un sens ou dans l'autre) : seule la première ligne compte
+    const key = [normalizeName(nom), normalizeName(prenom)].sort().join('|')
+    if (seen.has(key)) { skipped++; continue }
+    seen.add(key)
     const hit = existing.find((i) => sameName(i, nom, prenom))
     if (hit) {
       stmts.push(db.prepare('UPDATE invites SET nombre_personnes = ? WHERE id = ?').bind(nb, hit.id))
       updated++
       continue
     }
-    const key = `${normalizeName(nom)}|${normalizeName(prenom)}`
-    if (seen.has(key)) { skipped++; continue }
-    seen.add(key)
     stmts.push(db.prepare("INSERT INTO invites (nom, prenom, nombre_personnes, origine) VALUES (?, ?, ?, 'import')").bind(nom, prenom, nb))
     created++
   }

@@ -189,6 +189,7 @@
     "thanks": "Nous avons hâte de partager ce moment avec vous. En attendant, préparez vos plus belles tenues colorées !"
   },
   "layout": "classic",
+  "guestList": true,
   "theme": {
     "background": "#FAF8F5",
     "surface": "#FDFDFC",

@@ -3,7 +3,7 @@ import { deleteCookie, getSignedCookie, setSignedCookie } from 'hono/cookie'
 import QRCode from 'qrcode'
 import { eventLabel, getWedding, profileFor, type WeddingConfig } from './config'
 import {
-  deleteRsvp, eventsOf, getRsvpByToken, importInvites, listInvites, listRsvps, matchInvite, normalizeName, saveRsvp, tokenForEmail,
+  deleteRsvp, eventsOf, getRsvpByToken, importInvites, listInvites, listRsvps, matchInvite, normalizeName, rematchAll, saveRsvp, tokenForEmail,
   type Env, type ImportRow, type Rsvp,
 } from './db'
 import { Dashboard, Login, type Tab } from './pages/admin'
@@ -109,7 +109,8 @@ app.post('/rsvp', async (c) => {
     menu: absent ? null : text(body.menu, 80),
     message: text(body.message, 2000),
   }, token ?? undefined)
-  if (w.guestList) await matchInvite(c.env.DB, rsvp)
+  // Le rapprochement avec la liste des invités ne doit jamais empêcher l'enregistrement de la réponse
+  if (w.guestList) await matchInvite(c.env.DB, rsvp).catch((e) => console.error('Rapprochement invité impossible', e))
   return c.redirect(`/merci/${rsvp.token}${key !== w.defaultProfile && w.profiles ? `?k=${key}` : ''}`)
 })
 
@@ -172,7 +173,7 @@ app.get('/espace-maries', async (c) => {
   return c.html(
     <Dashboard
       w={w} tab={tab} rsvps={rsvps} invites={invites} flash={c.req.query('m')}
-      q={c.req.query('q') ?? ''} groupe={c.req.query('groupe') ?? ''} evt={c.req.query('evt') ?? ''} statut={c.req.query('statut') ?? ''}
+      q={c.req.query('q') ?? ''} groupe={c.req.query('groupe') ?? ''} evt={c.req.query('evt') ?? ''} statut={c.req.query('statut') ?? ''} tri={c.req.query('tri') ?? ''} flashErr={c.req.query('err') === '1'}
       shareLinks={shareLinks} siteUrl={base} qrSvg={tab === 'partage' ? await qrSvg(base) : ''}
     />,
   )
@@ -205,40 +206,58 @@ app.post('/espace-maries/reponses/:id/supprimer', async (c) => {
 })
 
 // Invités attendus
-const backToInvites = (c: C, m: string) => c.redirect('/espace-maries?tab=invites&m=' + encodeURIComponent(m))
+const backToInvites = (c: C, m: string, err = false) => c.redirect(`/espace-maries?tab=invites${err ? '&err=1' : ''}&m=` + encodeURIComponent(m))
+const safely = async (c: C, fn: () => Promise<string>) => {
+  try {
+    return backToInvites(c, await fn())
+  } catch (e) {
+    console.error(e)
+    return backToInvites(c, 'Une erreur est survenue, la modification n’a pas été enregistrée. Merci de réessayer.', true)
+  }
+}
 
 app.post('/espace-maries/invites', async (c) => {
   const b = await c.req.parseBody()
   const nom = text(b.nom, 80), prenom = text(b.prenom, 80), nb = int(b.nombre_personnes, 1, 50)
-  if (!nom || !prenom) return backToInvites(c, 'Nom et prénom requis.')
+  if (!nom || !prenom) return backToInvites(c, 'Merci d’indiquer le nom et le prénom.', true)
   const id = Number(b.id)
-  if (id) await c.env.DB.prepare('UPDATE invites SET nom = ?, prenom = ?, nombre_personnes = ?, ambigu = 0 WHERE id = ?').bind(nom, prenom, nb, id).run()
-  else await c.env.DB.prepare('INSERT INTO invites (nom, prenom, nombre_personnes) VALUES (?, ?, ?)').bind(nom, prenom, nb).run()
-  return backToInvites(c, id ? 'Invité modifié.' : `${prenom} ${nom} a été ajouté(e).`)
+  return safely(c, async () => {
+    if (id) await c.env.DB.prepare('UPDATE invites SET nom = ?, prenom = ?, nombre_personnes = ?, ambigu = 0 WHERE id = ?').bind(nom, prenom, nb, id).run()
+    else await c.env.DB.prepare("INSERT INTO invites (nom, prenom, nombre_personnes, origine) VALUES (?, ?, ?, 'manuel')").bind(nom, prenom, nb).run()
+    await rematchAll(c.env.DB) // une réponse déjà reçue à ce nom coche directement la fiche
+    return id ? `La fiche de ${prenom} ${nom} a été modifiée.` : `${prenom} ${nom} a été ajouté(e) à la liste.`
+  })
 })
 
 app.post('/espace-maries/invites/import', async (c) => {
   const rows = await c.req.json<ImportRow[]>().catch(() => null)
   if (!Array.isArray(rows)) return c.json({ error: 'Format invalide' }, 400)
-  const res = await importInvites(c.env.DB, rows)
-  // Rapproche les nouvelles fiches des réponses déjà reçues
-  const rsvps = await listRsvps(c.env.DB)
-  for (const r of rsvps.reverse()) await matchInvite(c.env.DB, r)
-  return c.json(res)
+  try {
+    const res = await importInvites(c.env.DB, rows)
+    await rematchAll(c.env.DB) // rapproche les nouvelles fiches des réponses déjà reçues
+    return c.json(res)
+  } catch (e) {
+    console.error(e)
+    return c.json({ error: 'Erreur d’enregistrement' }, 500)
+  }
 })
 
 app.post('/espace-maries/invites/:id/statut', async (c) => {
   const b = await c.req.parseBody()
   const repondu = b.statut === 'repondu'
-  await c.env.DB.prepare(`UPDATE invites SET statut = ?, date_reponse = ${repondu ? "datetime('now')" : 'NULL'}, rsvp_id = NULL, ambigu = 0 WHERE id = ?`)
-    .bind(repondu ? 'repondu' : 'en_attente', Number(c.req.param('id'))).run()
-  return backToInvites(c, repondu ? 'Marqué comme répondu.' : 'Remis en attente.')
+  return safely(c, async () => {
+    await c.env.DB.prepare(`UPDATE invites SET statut = ?, date_reponse = ${repondu ? "datetime('now')" : 'NULL'}, rsvp_id = NULL, ambigu = 0 WHERE id = ?`)
+      .bind(repondu ? 'repondu' : 'en_attente', Number(c.req.param('id'))).run()
+    return repondu ? 'Invité marqué comme ayant répondu.' : 'Invité remis en attente.'
+  })
 })
 
-app.post('/espace-maries/invites/:id/supprimer', async (c) => {
-  await c.env.DB.prepare('DELETE FROM invites WHERE id = ?').bind(Number(c.req.param('id'))).run()
-  return backToInvites(c, 'Fiche supprimée.')
-})
+// Supprime uniquement la fiche invité : la réponse RSVP éventuelle est conservée
+app.post('/espace-maries/invites/:id/supprimer', (c) =>
+  safely(c, async () => {
+    await c.env.DB.prepare('DELETE FROM invites WHERE id = ?').bind(Number(c.req.param('id'))).run()
+    return 'Fiche supprimée (la réponse éventuelle est conservée).'
+  }))
 
 app.get('/espace-maries/relance.csv', async (c) => {
   const pending = (await listInvites(c.env.DB)).filter((i) => i.statut === 'en_attente')
