@@ -161,6 +161,14 @@ footer .adm:hover{color:var(--terra-deep)}
 .splash .place{font-size:.95rem;color:#56614e;margin-top:.3rem}
 .enter{display:inline-flex;align-items:center;gap:.6rem;margin-top:3rem;font-family:var(--title);font-size:1.3rem;color:var(--terra-deep);text-decoration:none;border:1px solid rgba(208,97,57,.45);background:rgba(208,97,57,.08);border-radius:999px;padding:.8rem 2.5rem;transition:background .2s}
 .enter:hover{background:rgba(208,97,57,.15)}
+.splash.photo{position:relative;isolation:isolate;overflow:hidden}
+.splash .bg{position:absolute;inset:0;z-index:-2;width:100%;height:100%;object-fit:cover;transform:scale(1.04);animation:drift 24s ease-out both}
+.splash .voile{position:absolute;inset:0;z-index:-1;background:radial-gradient(ellipse 62% 55% at 50% 50%,rgba(250,248,245,.9) 0%,rgba(248,243,234,.8) 55%,rgba(240,230,212,.66) 100%)}
+@media(max-width:640px){.splash .voile{background:radial-gradient(ellipse 95% 60% at 50% 50%,rgba(250,248,245,.9) 0%,rgba(248,243,234,.82) 60%,rgba(240,230,212,.7) 100%)}}
+.splash.photo .enter{background:rgba(250,248,245,.75)}.splash.photo .enter:hover{background:rgba(250,248,245,.95)}
+.splash.photo hr{border-top-color:rgba(79,100,64,.35)}
+@keyframes drift{from{transform:scale(1.1)}to{transform:scale(1.04)}}
+@media(prefers-reduced-motion:reduce){.splash .bg{animation:none}}
 .reveal{opacity:0;transform:translateY(18px);transition:opacity .8s ease,transform .8s ease}.reveal.in{opacity:1;transform:none}
 @media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none}}
 `
@@ -243,7 +251,9 @@ export function Splash({ w, k }: { w: WeddingConfig; k: string }) {
   const c = w.classic ?? {}
   return (
     <Shell w={w} title={w.seo.title} bare>
-      <div class="splash">
+      <div class={`splash${w.splash.image ? ' photo' : ''}`}>
+        {w.splash.image && <img class="bg" src={w.splash.image} alt="" aria-hidden="true" fetchpriority="high" style={w.splash.imagePosition ? `object-position:${w.splash.imagePosition}` : undefined} />}
+        {w.splash.image && <div class="voile" aria-hidden="true"></div>}
         <p class="kicker">{w.splash.kicker ?? 'Nous nous marions'}</p>
         <h1>{w.partner1} <span class="amp">&amp;</span> {w.partner2}</h1>
         <hr />

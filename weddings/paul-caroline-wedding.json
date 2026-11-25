@@ -14,7 +14,8 @@
   "media": {},
   "splash": {
     "enabled": true,
-    "kicker": "Nous nous marions"
+    "kicker": "Nous nous marions",
+    "image": "/mas-aubrilha.jpg"
   },
   "hero": {
     "kicker": "15 mai 2027 · Clermont-l'Hérault",
