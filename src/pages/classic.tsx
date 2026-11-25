@@ -429,7 +429,7 @@ export function Infos({ w, k }: { w: WeddingConfig; k: string }) {
       {!!w.hotels?.length && (
         <section class="sec">
           <div class="wrap">
-            <div class="sh"><Svg name="hotel" size={20} /><h2>Hôtels partenaires</h2></div>
+            <div class="sh"><Svg name="hotel" size={20} /><h2>Hôtels à proximité</h2></div>
             <div class="cards two">
               {w.hotels.map((h) => (
                 <div class="card reveal">

@@ -78,7 +78,7 @@
       "key": "soiree_dimanche",
       "title": "Soirée pizza",
       "day": "Dimanche 16 mai 2027",
-      "time": "18h00",
+      "time": "18h - 05h",
       "icon": "pizza",
       "note": "Soirée pizza détendue pour clôturer le weekend tous ensemble."
     }
@@ -156,20 +156,20 @@
     {
       "name": "Brit Hôtel",
       "place": "Clermont-l'Hérault",
-      "text": "Hôtel partenaire privatisé pour l'événement.\n30 chambres (18 chambres doubles dont 2 PMR, 9 chambres triples et 3 chambres familiales de 4 places) pour un total de 75 places.\nPas de lits d'appoint. Possibilité de mettre un lit bébé jusqu'à 2 ans.\nPour réserver, les appeler au 04 48 54 00 30 en mentionnant le mariage de Caroline & Paul.",
+      "text": "Hôtel partenaire privatisé pour l'événement du samedi 15 au lundi 17 mai.\n30 chambres (18 chambres doubles dont 2 PMR, 9 chambres triples et 3 chambres familiales de 4 places) pour un total de 75 places.\nPas de lits d'appoint. Possibilité de mettre un lit bébé jusqu'à 2 ans.\nPour réserver, les appeler au 04 48 54 00 30 en mentionnant le mariage de Caroline & Paul.",
       "url": "https://clermont-herault.brithotel.com/"
     },
     {
       "name": "Hôtel Le Sarac",
       "place": "Clermont-l'Hérault et environs",
-      "text": "Hôtel partenaire — mentionnez le mariage Caroline & Paul lors de votre réservation."
+      "text": "Mentionnez le mariage Caroline & Paul lors de votre réservation."
     }
   ],
   "hotelsNote": "D'autres hébergements (gîtes, chambres d'hôtes) sont disponibles dans le secteur — n'hésitez pas à nous écrire pour des recommandations.",
   "faq": [
     {
       "q": "Comment réserver ma chambre ?",
-      "a": "Contactez directement l'un des deux hôtels partenaires en mentionnant notre mariage pour bénéficier de conditions préférentielles, dans la limite des disponibilités."
+      "a": "Contactez directement l'un des deux hôtels en mentionnant notre mariage pour bénéficier de conditions préférentielles, dans la limite des disponibilités."
     },
     {
       "q": "Puis-je venir avec mes enfants ?",
