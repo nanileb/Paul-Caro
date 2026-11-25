@@ -54,9 +54,9 @@
       "key": "soiree_samedi",
       "title": "Soirée",
       "day": "Samedi 15 mai 2027",
-      "time": "21h00",
+      "time": "21h - 05h",
       "icon": "music",
-      "note": "Dîner, danse et fête jusqu'au bout de la nuit sous les étoiles du Languedoc."
+      "note": "Dîner, danse et fête."
     },
     {
       "key": "repas_dimanche",
@@ -201,7 +201,7 @@
     "fontBody": "Inter"
   },
   "classic": {
-    "weddingDay": "15 mai 2027",
+    "weddingDay": "15 - 17 mai 2027",
     "venueLine": "Mas Aubrilha · Clermont-l'Hérault",
     "footerPlace": "Mas Aubrilha — Clermont-l'Hérault",
     "venueImage": "/mas-aubrilha.jpg",
