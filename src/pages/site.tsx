@@ -232,7 +232,7 @@ export function Home({ w, profileKey, visible, existing, error }: HomeProps) {
                 {w.hotels.map((h) => (
                   <div class="icard">
                     <span class="ic"><Svg name="bed" /></span>
-                    <div><h4>{h.name}</h4>{h.place && <p class="hint">{h.place}</p>}<p style="white-space:pre-line">{h.text}</p>{h.url && <a href={h.url} target="_blank" rel="noopener">Site de l'hôtel →</a>}</div>
+                    <div><h4>{h.name}</h4>{h.place && <p class="hint">{h.place}</p>}{h.text && <p style="white-space:pre-line">{h.text}</p>}{h.lines?.map((l) => <p>{l.text}</p>)}{h.url && <a href={h.url} target="_blank" rel="noopener">Site de l'hôtel →</a>}</div>
                   </div>
                 ))}
               </div>
