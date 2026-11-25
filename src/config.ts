@@ -59,7 +59,7 @@ export type WeddingConfig = {
     splashVideo?: string
     music?: string[] // une ou plusieurs pistes enchaînées
   }
-  splash: { enabled: boolean; kicker?: string; text?: string }
+  splash: { enabled: boolean; kicker?: string; text?: string; image?: string; imagePosition?: string } // image : photo de fond sous un voile beige (layout classic)
   hero: { kicker?: string; text?: string; cta?: string; photo?: string; photoPosition?: string } // photo : portrait encadré (ou grande photo d'accueil en layout classic)
   story?: { title: string; paragraphs: string[]; signature?: string }
   quote?: string
