@@ -5,7 +5,7 @@ import { raw } from 'hono/html'
 import { eventLabel, type WeddingConfig, type WeddingEvent } from '../config'
 import { eventsOf, type Rsvp } from '../db'
 import { Svg } from '../icons'
-import { fontsHref } from '../styles'
+import { ampCss, fontsHref } from '../styles'
 import { siteScript } from '../client/site'
 
 export type ClassicPage = 'accueil' | 'lieu' | 'programme' | 'infos' | 'rsvp'
@@ -211,7 +211,7 @@ function Shell({ w, title, children, bare }: { w: WeddingConfig; title: string; 
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
         <link rel="stylesheet" href={fontsHref(w.theme)} />
-        <style>{raw(css)}</style>
+        <style>{raw(css + ampCss(w.theme))}</style>
       </head>
       <body>
         {children}
@@ -302,7 +302,7 @@ export function Accueil({ w, k, visible }: { w: WeddingConfig; k: string; visibl
         <section class="quote">
           <div class="narrow reveal">
             <p>« {w.quote} »</p>
-            <p class="sig">— {w.partner1} &amp; {w.partner2}</p>
+            <p class="sig">— {w.partner1} <span class="amp">&amp;</span> {w.partner2}</p>
           </div>
         </section>
       )}

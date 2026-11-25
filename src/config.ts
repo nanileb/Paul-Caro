@@ -48,6 +48,7 @@ export type WeddingConfig = {
     heroText: string
     fontTitle: string
     fontScript?: string
+    fontAmp?: string // police dédiée à l'esperluette « & » (logos, titres), ex. "Parisienne"
     fontBody: string
     countdownColors?: string[]
     overlay?: string // voile sur l'image/vidéo de fond

@@ -2,7 +2,7 @@ import type { Child } from 'hono/jsx'
 import { raw } from 'hono/html'
 import { eventLabel, groupLabel, type WeddingConfig } from '../config'
 import { eventsOf, normalizeName, peopleOf, type Invite, type Rsvp } from '../db'
-import { adminCss, fontsHref } from '../styles'
+import { adminCss, ampCss, fontsHref } from '../styles'
 import { adminScript } from '../client/admin'
 
 const fmt = (iso: string | null) =>
@@ -19,7 +19,7 @@ function Shell({ w, children }: { w: WeddingConfig; children: Child }) {
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
         <link rel="stylesheet" href={fontsHref(w.theme)} />
-        <style>{raw(adminCss(w.theme))}</style>
+        <style>{raw(adminCss(w.theme) + ampCss(w.theme))}</style>
       </head>
       <body>{children}<script>{raw(adminScript)}</script></body>
     </html>
