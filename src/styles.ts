@@ -2,10 +2,14 @@ import type { WeddingConfig } from './config'
 
 export const fontsHref = (t: WeddingConfig['theme']) =>
   'https://fonts.googleapis.com/css2?' +
-  [t.fontTitle, t.fontScript, t.fontBody]
+  [...new Set([t.fontTitle, t.fontScript, t.fontBody, t.fontAmp])]
     .filter(Boolean)
-    .map((f) => `family=${f!.replace(/ /g, '+')}${f === t.fontScript ? '' : ':ital,wght@0,300;0,400;0,500;0,600;1,400'}`)
+    .map((f) => `family=${f!.replace(/ /g, '+')}${f === t.fontScript || f === t.fontAmp ? '' : ':ital,wght@0,300;0,400;0,500;0,600;1,400'}`)
     .join('&') + '&display=swap'
+
+// Esperluette dans une police à part (ex. Parisienne), seulement si le mariage en définit une
+export const ampCss = (t: WeddingConfig['theme']) =>
+  t.fontAmp ? `.amp{font-family:'${t.fontAmp}',cursive;font-style:normal;font-weight:400;font-size:1.15em;line-height:1}` : ''
 
 export const css = (t: WeddingConfig['theme']) => `
 :root{--bg:${t.background};--surface:${t.surface};--text:${t.text};--primary:${t.primary};--accent:${t.accent};--hero:${t.heroText};
