@@ -2,7 +2,7 @@ import type { Child } from 'hono/jsx'
 import { raw } from 'hono/html'
 import { eventLabel, groupLabel, type WeddingConfig } from '../config'
 import { eventsOf, normalizeName, peopleOf, type Invite, type Rsvp } from '../db'
-import { adminCss } from '../styles'
+import { adminCss, fontsHref } from '../styles'
 import { adminScript } from '../client/admin'
 
 const fmt = (iso: string | null) =>
@@ -16,7 +16,10 @@ function Shell({ w, children }: { w: WeddingConfig; children: Child }) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="robots" content="noindex" />
         <title>Espace mariés · {w.partner1} &amp; {w.partner2}</title>
-        <style>{raw(adminCss)}</style>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+        <link rel="stylesheet" href={fontsHref(w.theme)} />
+        <style>{raw(adminCss(w.theme))}</style>
       </head>
       <body>{children}<script>{raw(adminScript)}</script></body>
     </html>
@@ -27,8 +30,9 @@ export function Login({ w, error }: { w: WeddingConfig; error?: string }) {
   return (
     <Shell w={w}>
       <form class="login" method="post" action="/espace-maries/connexion">
-        <h1>Espace mariés</h1>
-        <p class="muted">Accès réservé à {w.partner1} &amp; {w.partner2}</p>
+        <span class="kicker">Espace mariés</span>
+        <h1>{w.partner1} <span class="amp">&amp;</span> {w.partner2}</h1>
+        <p class="muted">Accès réservé aux mariés</p>
         <input type="password" name="password" placeholder="Mot de passe" required autofocus />
         {error && <p class="no">{error}</p>}
         <button class="btn" type="submit">Accéder</button>
@@ -67,10 +71,14 @@ export function Dashboard(p: Props) {
   return (
     <Shell w={w}>
       <div class="top">
-        <div><strong>Espace mariés</strong><small>{w.partner1} &amp; {w.partner2} · {w.dateLabel}</small></div>
-        <div class="bar" style="margin:0">
+        <div>
+          <span class="kicker">Espace mariés</span>
+          <div class="names">{w.partner1} <span class="amp">&amp;</span> {w.partner2}</div>
+          <small>{w.dateLabel}</small>
+        </div>
+        <div class="actions">
           <a class="btn light sm" href="/" target="_blank">Voir le site</a>
-          <form method="post" action="/espace-maries/deconnexion"><button class="btn sm" style="background:transparent;border-color:#fff">Déconnexion</button></form>
+          <form method="post" action="/espace-maries/deconnexion"><button class="btn light sm">Déconnexion</button></form>
         </div>
       </div>
       <div class="wrap">
@@ -168,7 +176,7 @@ function Responses({ w, rsvps, invites, q, groupe, evt }: Props) {
         <a class="btn sm" href={`/espace-maries/reponses.csv?${qs}`}>Exporter en CSV (Excel)</a>
       </form>
       <div class="scroll">
-        <table>
+        <table class="cards">
           <tr>
             <th>Nom</th>{w.profiles && <th>Groupe</th>}<th class="c">Présent</th>
             {w.rsvp.perEvent ? rsvpEvents.map((e) => <th class="c">{eventLabel(w, e)}</th>) : <th class="c">Pers.</th>}
@@ -179,16 +187,16 @@ function Responses({ w, rsvps, invites, q, groupe, evt }: Props) {
             return (
               <tr>
                 <td><b>{r.prenom} {r.nom}</b>{isDup(r) && <> <span class="pill warn" title="Plusieurs réponses à ce nom : vérifiez s'il s'agit d'un doublon">doublon ?</span></>}{offList(r) && <> <span class="pill out" title="Aucune fiche à ce nom dans l'onglet Invités à relancer (ou homonyme à vérifier)">hors liste</span></>}{r.email && <div class="muted">{r.email}</div>}</td>
-                {w.profiles && <td><span class="pill">{groupLabel(w, r.groupe)}</span></td>}
-                <td class="c">{r.absent ? <span class="no">Non</span> : <span class="yes">Oui</span>}</td>
+                {w.profiles && <td data-label="Groupe"><span class="pill">{groupLabel(w, r.groupe)}</span></td>}
+                <td class="c" data-label="Présent">{r.absent ? <span class="no">Non</span> : <span class="yes">Oui</span>}</td>
                 {w.rsvp.perEvent
-                  ? rsvpEvents.map((e) => <td class="c">{r.absent ? '—' : ev[e.key] ? <span class="yes">✓ {ev[e.key]}</span> : <span class="muted">✗</span>}</td>)
-                  : <td class="c">{r.absent ? '—' : r.guests}</td>}
-                {w.rsvp.askCompanions && <td>{r.companions || '—'}</td>}
-                <td>{[r.menu, r.dietary].filter(Boolean).join(' · ') || '—'}</td>
-                <td>{r.message || '—'}</td>
-                <td class="muted">{fmt(r.updated_at)}</td>
-                <td><form method="post" action={`/espace-maries/reponses/${r.id}/supprimer`} data-confirm={`Supprimer la réponse de ${r.prenom} ${r.nom} ?`}><button class="btn red sm">Suppr.</button></form></td>
+                  ? rsvpEvents.map((e) => <td class="c" data-label={eventLabel(w, e)}>{r.absent ? '—' : ev[e.key] ? <span class="yes">✓ {ev[e.key]}</span> : <span class="muted">✗</span>}</td>)
+                  : <td class="c" data-label="Personnes">{r.absent ? '—' : r.guests}</td>}
+                {w.rsvp.askCompanions && <td data-label="Accompagnants">{r.companions || '—'}</td>}
+                <td data-label="Restrictions">{[r.menu, r.dietary].filter(Boolean).join(' · ') || '—'}</td>
+                <td data-label="Message">{r.message || '—'}</td>
+                <td class="muted" data-label="Date">{fmt(r.updated_at)}</td>
+                <td class="actions"><form method="post" action={`/espace-maries/reponses/${r.id}/supprimer`} data-confirm={`Supprimer la réponse de ${r.prenom} ${r.nom} ?`}><button class="btn red sm">Suppr.</button></form></td>
               </tr>
             )
           })}
@@ -252,17 +260,17 @@ function Invites({ invites, q, statut, tri = '' }: Props) {
           </form>
         </div>
         <div class="scroll">
-          <table>
+          <table class="cards">
             <tr>{sortHead('nom', 'Nom')}<th>Prénom</th><th class="c">Pers.</th>{sortHead('statut', 'Statut')}{sortHead('date', 'Date de réponse')}<th>Origine</th><th></th></tr>
             {rows.map((i) => (
               <tr>
                 <td><b>{i.nom}</b>{!!i.ambigu && i.statut === 'en_attente' && <div><span class="pill warn" title="Une réponse a été reçue à ce nom mais plusieurs invités portent le même nom : faites le lien vous-mêmes">⚠ à vérifier manuellement</span></div>}</td>
-                <td>{i.prenom}</td>
-                <td class="c">{i.nombre_personnes}</td>
-                <td>{i.statut === 'repondu' ? <span class="pill ok">Répondu</span> : <span class="pill wait">En attente</span>}</td>
-                <td class="muted">{i.date_reponse ? fmt(i.date_reponse) : '—'}{i.statut === 'repondu' && !i.rsvp_id && <div style="font-size:.75rem">(manuel)</div>}</td>
-                <td class="muted">{i.origine === 'import' ? 'Importé' : 'Ajouté manuellement'}</td>
-                <td class="bar" style="margin:0;flex-wrap:nowrap">
+                <td data-label="Prénom">{i.prenom}</td>
+                <td class="c" data-label="Personnes">{i.nombre_personnes}</td>
+                <td data-label="Statut">{i.statut === 'repondu' ? <span class="pill ok">Répondu</span> : <span class="pill wait">En attente</span>}</td>
+                <td class="muted" data-label="Réponse"><span>{i.date_reponse ? fmt(i.date_reponse) : '—'}{i.statut === 'repondu' && !i.rsvp_id && <small style="display:block;font-size:.75rem">(manuel)</small>}</span></td>
+                <td class="muted" data-label="Origine">{i.origine === 'import' ? 'Importé' : 'Ajouté manuellement'}</td>
+                <td class="actions">
                   <form method="post" action={`/espace-maries/invites/${i.id}/statut`}><input type="hidden" name="statut" value={i.statut === 'repondu' ? 'en_attente' : 'repondu'} /><button class="btn light sm" data-busy="…">{i.statut === 'repondu' ? 'Remettre en attente' : 'Marquer comme répondu'}</button></form>
                   <button class="btn light sm" type="button" data-edit={JSON.stringify({ id: i.id, nom: i.nom, prenom: i.prenom, nb: i.nombre_personnes })}>Modifier</button>
                   <form method="post" action={`/espace-maries/invites/${i.id}/supprimer`} data-confirm={`Supprimer la fiche de ${i.prenom} ${i.nom} ? La réponse RSVP éventuelle est conservée.`}><button class="btn red sm" data-busy="…">Suppr.</button></form>
