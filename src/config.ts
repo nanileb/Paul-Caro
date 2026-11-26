@@ -82,6 +82,7 @@ export type WeddingConfig = {
     askCompanions?: boolean
     askDietary?: boolean
     menuChoices?: string[]
+    askChildren?: boolean // mode par événement : nombre d'adultes puis d'enfants
     maxPersons: number
     thanks?: string
   }

@@ -202,6 +202,7 @@
   "rsvp": {
     "deadlineLabel": "1er mars 2027",
     "perEvent": true,
+    "askChildren": true,
     "askDietary": true,
     "maxPersons": 10,
     "thanks": "Nous avons hâte de partager ce moment avec vous. En attendant, préparez vos plus belles tenues colorées !"

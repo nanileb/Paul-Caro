@@ -49,12 +49,14 @@ if (form) {
   const zone = $('[data-when-present]', form);
   const sync = () => { const absent = $('input[name=presence][value=non]', form).checked, present = $('input[name=presence][value=oui]', form).checked;
     zone.style.display = absent ? 'none' : ''; zone.style.opacity = present ? '1' : '.5';
-    $$('.evt', form).forEach((row) => { const cb = $('input[type=checkbox]', row), nb = $('input[type=number]', row); nb.style.visibility = cb.checked ? 'visible' : 'hidden'; nb.disabled = !cb.checked; }); };
-  const part = $('[data-participants]', form);
-  // Cocher un moment reprend le nombre de participants indiqué plus haut
-  $$('.evt input[type=checkbox]', form).forEach((cb) => cb.addEventListener('change', () => { if (cb.checked && part) $('input[type=number]', cb.closest('.evt')).value = part.value || 1; }));
+    $$('.evt', form).forEach((row) => { const cb = $('input[type=checkbox]', row); const c = $('[data-cnt]', row); if (c.classList.contains('nbs')) c.style.display = cb.checked ? '' : 'none'; else c.style.visibility = cb.checked ? 'visible' : 'hidden'; $$('input[type=number]', row).forEach((nb) => { nb.disabled = !cb.checked; }); }); };
+  const part = $('[data-participants]', form), kids = $('[data-kids]', form);
+  // Cocher un moment reprend le nombre d'adultes (et d'enfants) indiqué plus haut
+  $$('.evt input[type=checkbox]', form).forEach((cb) => cb.addEventListener('change', () => { if (!cb.checked) return; const row = cb.closest('.evt'), a = $('[data-a]', row), k = $('[data-k]', row);
+    if (part && a) a.value = part.value || 1; if (kids && k) k.value = kids.value || 0; }));
   $$('input', form).forEach((i) => i.addEventListener('change', sync));
-  if (part) part.addEventListener('input', () => $$('.evt', form).forEach((row) => { const n = $('input[type=number]', row); n.value = part.value; }));
+  if (part) part.addEventListener('input', () => $$('.evt [data-a]', form).forEach((n) => { n.value = part.value; }));
+  if (kids) kids.addEventListener('input', () => $$('.evt [data-k]', form).forEach((n) => { n.value = kids.value; }));
   sync();
   form.addEventListener('submit', (e) => {
     const present = $('input[name=presence][value=oui]', form).checked;

@@ -156,6 +156,7 @@ h3{font-size:1.45rem;display:flex;flex-wrap:wrap;align-items:center;gap:.6rem}
 .kpi:first-child:before{background:var(--primary)}
 .kpi b{display:block;font-family:var(--title);font-weight:500;font-size:2.4rem;line-height:1;color:var(--text);font-variant-numeric:lining-nums tabular-nums}
 .kpi span{display:block;margin-top:.35rem;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--soft)}
+.kpi em{display:block;margin-top:.25rem;font-style:normal;font-size:.8rem;color:var(--text)}.list li small{color:var(--soft);font-weight:400}
 /* Onglets */
 .tabs{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1.25rem}
 .tabs a{padding:.55rem 1.05rem;border-radius:999px;background:var(--card);border:1px solid var(--line);text-decoration:none;color:var(--soft);font-size:.9rem;white-space:nowrap;transition:.2s}

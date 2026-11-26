@@ -3,7 +3,7 @@ import { deleteCookie, getSignedCookie, setSignedCookie } from 'hono/cookie'
 import QRCode from 'qrcode'
 import { eventLabel, getWedding, profileFor, type WeddingConfig } from './config'
 import {
-  deleteRsvp, eventsOf, getRsvpByToken, importInvites, listInvites, listRsvps, matchInvite, normalizeName, rematchAll, saveRsvp, tokenForEmail,
+  deleteRsvp, eventsOf, kidsOf, getRsvpByToken, importInvites, listInvites, listRsvps, matchInvite, normalizeName, rematchAll, saveRsvp, tokenForEmail,
   type Env, type ImportRow, type Rsvp,
 } from './db'
 import { Dashboard, Login, type Tab } from './pages/admin'
@@ -76,11 +76,14 @@ app.post('/rsvp', async (c) => {
 
   // En cas de refus, on réaffiche le formulaire tel que saisi (et on garde le lien de modification)
   const fail = (error: string) => {
-    const evs: Record<string, number> = {}
-    for (const e of rsvpEvents) if (([] as unknown[]).concat(body.evt ?? []).includes(e.key)) evs[e.key] = int(body[`nb_${e.key}`], 1, max)
+    const evs: Record<string, number> = {}, kds: Record<string, number> = {}
+    for (const e of rsvpEvents) if (([] as unknown[]).concat(body.evt ?? []).includes(e.key)) {
+      evs[e.key] = int(body[`nb_${e.key}`], 1, max)
+      if (w.rsvp.askChildren) kds[e.key] = int(body[`nbk_${e.key}`], 0, max - evs[e.key])
+    }
     const draft: Rsvp = {
       id: 0, token: text(body.token, 64) ?? '', prenom: prenom ?? '', nom: nom ?? '', email, groupe: null,
-      absent: body.presence === 'non' ? 1 : 0, guests: int(body.guests, 1, max), events: JSON.stringify(evs),
+      absent: body.presence === 'non' ? 1 : 0, guests: int(body.guests, 1, max), events: JSON.stringify(evs), enfants: JSON.stringify(kds),
       companions: text(body.companions, 300), dietary: text(body.dietary, 500), menu: text(body.menu, 80), message: text(body.message, 2000),
       created_at: '', updated_at: '',
     }
@@ -92,10 +95,14 @@ app.post('/rsvp', async (c) => {
   if (body.presence !== 'oui' && body.presence !== 'non') return fail('Merci d’indiquer si vous serez présent(e).')
 
   // Seuls les événements prévus pour ce lien d'invitation sont enregistrés
-  const chosen: Record<string, number> = {}
+  // Avec adultes / enfants : chosen = adultes (au moins 1), kids = enfants, le total restant plafonné à maxPersons
+  const chosen: Record<string, number> = {}, kids: Record<string, number> = {}
   if (!absent && w.rsvp.perEvent) {
     const checked = ([] as unknown[]).concat(body.evt ?? [])
-    for (const e of rsvpEvents) if (checked.includes(e.key)) chosen[e.key] = int(body[`nb_${e.key}`], 1, max)
+    for (const e of rsvpEvents) if (checked.includes(e.key)) {
+      chosen[e.key] = int(body[`nb_${e.key}`], 1, max)
+      if (w.rsvp.askChildren) { const n = int(body[`nbk_${e.key}`], 0, max - chosen[e.key]); if (n) kids[e.key] = n }
+    }
     if (!Object.keys(chosen).length) return fail('Merci de cocher au moins un événement, ou d’indiquer que vous ne pourrez pas venir.')
   }
 
@@ -104,6 +111,7 @@ app.post('/rsvp', async (c) => {
     prenom, nom, email, groupe: w.profiles ? key : null, absent: absent ? 1 : 0,
     guests: absent || w.rsvp.perEvent ? 0 : int(body.guests, 1, max),
     events: JSON.stringify(chosen),
+    enfants: JSON.stringify(kids),
     companions: absent ? null : text(body.companions, 300),
     dietary: absent ? null : text(body.dietary, 500),
     menu: absent ? null : text(body.menu, 80),
@@ -192,10 +200,10 @@ app.get('/espace-maries/reponses.csv', async (c) => {
   const evs = w.events.filter((e) => !e.noRsvp)
   const rows = (await listRsvps(c.env.DB)).filter((r: Rsvp) =>
     (!q || normalizeName(`${r.prenom} ${r.nom} ${r.email ?? ''}`).includes(normalizeName(q))) && (!groupe || r.groupe === groupe) && (!evt || (!r.absent && eventsOf(r)[evt])))
-  const head = ['Nom', 'Prénom', 'Email', 'Groupe', 'Présent', ...(w.rsvp.perEvent ? evs.map((e) => `${eventLabel(w, e)} (pers.)`) : ['Personnes']), 'Accompagnants', 'Menu', 'Restrictions', 'Message', 'Date de réponse']
+  const head = ['Nom', 'Prénom', 'Email', 'Groupe', 'Présent', ...(w.rsvp.perEvent ? evs.flatMap((e) => (w.rsvp.askChildren ? [`${eventLabel(w, e)} (adultes)`, `${eventLabel(w, e)} (enfants)`] : [`${eventLabel(w, e)} (pers.)`])) : ['Personnes']), 'Accompagnants', 'Menu', 'Restrictions', 'Message', 'Date de réponse']
   return csv([head, ...rows.map((r) => [
     r.nom, r.prenom, r.email, r.groupe ? w.profiles?.[r.groupe]?.label ?? r.groupe : '', r.absent ? 'Non' : 'Oui',
-    ...(w.rsvp.perEvent ? evs.map((e) => eventsOf(r)[e.key] ?? 0) : [r.guests]),
+    ...(w.rsvp.perEvent ? evs.flatMap((e) => (w.rsvp.askChildren ? [eventsOf(r)[e.key] ?? 0, eventsOf(r)[e.key] ? kidsOf(r)[e.key] ?? 0 : 0] : [eventsOf(r)[e.key] ?? 0])) : [r.guests]),
     r.companions, r.menu, r.dietary, r.message, r.updated_at,
   ])], 'reponses-mariage')
 })
