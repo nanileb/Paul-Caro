@@ -100,7 +100,7 @@ export function Dashboard(p: Props) {
         </nav>
         {p.tab === 'reponses' && <Responses {...p} />}
         {p.tab === 'participants' && (
-          <div class="cols">
+          <div class="cols align">
             {eventTotals.map((t) => (
               <div class="box">
                 <h3>{eventLabel(w, t.e)} <span class="pill">{t.people} pers.</span>{ak && t.people > 0 && <> <span class="pill">{adultsKids(t.adults, t.kids)}</span></>}</h3>
@@ -181,7 +181,7 @@ function Responses({ w, rsvps, invites, q, groupe, evt }: Props) {
         <a class="btn sm" href={`/espace-maries/reponses.csv?${qs}`}>Exporter en CSV (Excel)</a>
       </form>
       <div class="scroll">
-        <table class="cards">
+        <table class="cards rep">
           <tr>
             <th>Nom</th>{w.profiles && <th>Groupe</th>}<th class="c">Présent</th>
             {w.rsvp.perEvent ? rsvpEvents.map((e) => <th class="c">{eventLabel(w, e)}</th>) : <th class="c">Pers.</th>}
@@ -195,12 +195,12 @@ function Responses({ w, rsvps, invites, q, groupe, evt }: Props) {
                 {w.profiles && <td data-label="Groupe"><span class="pill">{groupLabel(w, r.groupe)}</span></td>}
                 <td class="c" data-label="Présent">{r.absent ? <span class="no">Non</span> : <span class="yes">Oui</span>}</td>
                 {w.rsvp.perEvent
-                  ? rsvpEvents.map((e) => <td class="c" data-label={eventLabel(w, e)}>{r.absent ? '—' : ev[e.key] ? <span class="yes">✓ {w.rsvp.askChildren ? short(ev[e.key], kidsAt(r, e.key)) : ev[e.key]}</span> : <span class="muted">✗</span>}</td>)
+                  ? rsvpEvents.map((e) => <td class="c" data-label={eventLabel(w, e)}>{r.absent ? '—' : ev[e.key] ? <span><span class="yes">✓ {w.rsvp.askChildren ? `${ev[e.key]} ad.` : ev[e.key]}</span>{w.rsvp.askChildren && kidsAt(r, e.key) > 0 && <span class="kd">{kidsAt(r, e.key)} enf.</span>}</span> : <span class="muted">✗</span>}</td>)
                   : <td class="c" data-label="Personnes">{r.absent ? '—' : r.guests}</td>}
                 {w.rsvp.askCompanions && <td data-label="Accompagnants">{r.companions || '—'}</td>}
                 <td data-label="Restrictions">{[r.menu, r.dietary].filter(Boolean).join(' · ') || '—'}</td>
                 <td data-label="Message">{r.message || '—'}</td>
-                <td class="muted" data-label="Date">{fmt(r.updated_at)}</td>
+                <td class="muted" data-label="Date">{fmt(r.updated_at).replace(" ", "\n")}</td>
                 <td class="actions"><form method="post" action={`/espace-maries/reponses/${r.id}/supprimer`} data-confirm={`Supprimer la réponse de ${r.prenom} ${r.nom} ?`}><button class="btn red sm">Suppr.</button></form></td>
               </tr>
             )

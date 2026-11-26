@@ -194,6 +194,13 @@ h3 .pill{font-family:var(--body);font-size:.75rem}
 .seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;background:var(--card)}
 .seg a{padding:.45rem .95rem;font-size:.84rem;text-decoration:none;color:var(--soft)}.seg a.on{background:var(--text);color:var(--bg)}
 .cols{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}.cols>.box{margin-bottom:0}
+/* « Qui vient à quoi » : titres sur une même hauteur par ligne de cartes, pour que les listes commencent alignées */
+.cols.align>.box{display:grid;grid-row:span 2;grid-template-rows:subgrid;row-gap:0;align-content:start}.cols.align>.box>h3{align-self:start;align-content:flex-start}
+/* Tableau des réponses : tient dans la largeur sur ordinateur (titres sur plusieurs lignes, enfants sous les adultes) */
+table.rep th{white-space:normal;vertical-align:bottom;line-height:1.35}
+table.rep td{overflow-wrap:anywhere}
+table.rep td.c{white-space:nowrap}table.rep td[data-label=Date]{white-space:pre-line;overflow-wrap:normal}table.rep th,table.rep td{padding-left:.4rem;padding-right:.4rem}table.rep td[data-label=Message]{min-width:8rem}
+table.rep .kd{display:block;font-size:.8rem;color:var(--soft);font-weight:500}
 .list{list-style:none;margin:0;padding:0}.list li{display:flex;justify-content:space-between;gap:1rem;padding:.5rem 0;border-bottom:1px solid var(--line)}.list li:last-child{border-bottom:0}
 .flash{background:color-mix(in srgb,var(--text) 7%,var(--card));border:1px solid color-mix(in srgb,var(--text) 18%,var(--card));border-radius:12px;padding:.75rem 1rem;margin-bottom:1.25rem}
 .flash.err{background:#fbe9e7;border-color:#f0c4be;color:#8c1d17}
@@ -235,6 +242,8 @@ dialog label{font-size:.8rem;letter-spacing:.06em;color:var(--soft)}dialog label
   table.cards td[colspan]{display:block;text-align:center;border:0}
   table.cards td[data-label=Message]{min-width:0}
   table.cards td:empty{display:none}
+  table.rep td[data-label=Date]{white-space:normal}table.rep .kd{display:inline;margin-left:.35rem}table.rep .kd:before{content:'· '}
+  .cols.align>.box{display:block}
   .qr .code{width:100%;max-width:260px;height:auto;aspect-ratio:1;margin:0 auto}
 }
 `
