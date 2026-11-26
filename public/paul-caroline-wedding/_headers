@@ -1,0 +1,3 @@
+# Fichiers audio : cache navigateur de 30 jours
+/media/*
+  Cache-Control: public, max-age=2592000

@@ -12,7 +12,9 @@
     "description": "Paul & Caroline se marient du 15 au 17 mai 2027 au Mas Aubrilha, Clermont-l'Hérault. Rejoignez-nous pour célébrer notre mariage.",
     "image": "https://pauletcaroline.com/partage.jpg"
   },
-  "media": {},
+  "media": {
+    "music": ["/media/musique.mp3"]
+  },
   "splash": {
     "enabled": true,
     "kicker": "Nous nous marions",
