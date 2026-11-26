@@ -1,4 +1,4 @@
-export type Env = { DB: D1Database; WEDDING_SLUG: string; ADMIN_PASSWORD: string; SESSION_SECRET?: string }
+export type Env = { DB: D1Database; WEDDING_SLUG: string; ADMIN_PASSWORD: string; SESSION_SECRET?: string; ASSETS?: Fetcher }
 
 export type Rsvp = {
   id: number; token: string; prenom: string; nom: string; email: string | null; groupe: string | null; absent: number
