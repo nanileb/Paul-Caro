@@ -26,8 +26,8 @@
       "assets": { "directory": "./public/paul-caroline-wedding" },
       // Domaine définitif (www redirigé vers pauletcaroline.com par le Worker)
       "routes": [
-        { "pattern": "pauletcaroline.com", "custom_domain": true },
-        { "pattern": "www.pauletcaroline.com", "custom_domain": true }
+        { "pattern": "pauletcaroline.com", "zone_name": "pauletcaroline.com", "custom_domain": true },
+        { "pattern": "www.pauletcaroline.com", "zone_name": "pauletcaroline.com", "custom_domain": true }
       ]
     },
     // Ethan & Julia
