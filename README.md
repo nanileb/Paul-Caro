@@ -26,7 +26,9 @@ gestion des homonymes, export de relance), liens à partager par groupe, QR code
 5. `npx wrangler secret put ADMIN_PASSWORD --env <slug>`
 6. `npx wrangler deploy --env <slug>` → `https://mariage-<slug>.<compte>.workers.dev`
 
-## Domaine payant (plus tard)
+## Domaine payant
+Paul & Caroline : `pauletcaroline.com` (et `www.` redirigé par le Worker vers le domaine nu).
+
 Acheter/transférer le domaine sur Cloudflare, puis dans l'env du mariage :
 `"routes": [{ "pattern": "pauline-et-benjamin.fr", "custom_domain": true }]`, renseigner `siteUrl` dans le JSON
 (pour le QR code) et redéployer. L'adresse workers.dev peut ensuite être coupée (`"workers_dev": false`).

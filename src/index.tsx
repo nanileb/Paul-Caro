@@ -13,6 +13,16 @@ import { Accueil, ClassicThanks, Infos, Lieu, Programme, RsvpPage, Splash } from
 type C = Context<{ Bindings: Env }>
 const app = new Hono<{ Bindings: Env }>()
 
+// www.<domaine> → <domaine> (redirection permanente, chemin et paramètres conservés)
+app.use('*', async (c, next) => {
+  const url = new URL(c.req.url)
+  if (url.hostname.startsWith('www.')) {
+    url.hostname = url.hostname.slice(4)
+    return c.redirect(url.toString(), 301)
+  }
+  await next()
+})
+
 const wedding = (c: C) => getWedding(c.env.WEDDING_SLUG)
 const text = (v: unknown, max: number) => (typeof v === 'string' && v.trim() ? v.trim().slice(0, max) : null)
 const int = (v: unknown, min: number, max: number) => Math.min(max, Math.max(min, Math.round(Number(v)) || min))
