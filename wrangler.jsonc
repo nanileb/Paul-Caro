@@ -23,7 +23,8 @@
       "name": "paul-caroline-wedding",
       "vars": { "WEDDING_SLUG": "paul-caroline-wedding" },
       "d1_databases": [{ "binding": "DB", "database_name": "paul-caroline-wedding", "database_id": "06b222b9-b997-46ea-b77b-58902e01fad4", "migrations_dir": "migrations" }],
-      "assets": { "directory": "./public/paul-caroline-wedding" },
+      // /media/* passe par le Worker : lecture par plages (Range) indispensable à Safari / iPhone pour l'audio
+      "assets": { "directory": "./public/paul-caroline-wedding", "binding": "ASSETS", "run_worker_first": ["/media/*"] },
       // Domaine définitif pauletcaroline.com : acheté sur un autre compte Cloudflare, servi pour l'instant
       // par un Worker relais dans ce compte-là. Une fois le domaine déplacé dans ce compte (possible
       // à partir du 6 décembre 2026), remettre :

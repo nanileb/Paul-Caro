@@ -37,6 +37,33 @@ app.get('/favicon.svg', (c) => {
   return c.body(svg, 200, { 'Content-Type': 'image/svg+xml', 'Cache-Control': 'public, max-age=86400' })
 })
 
+// Fichiers audio/vidéo : les fichiers statiques ne gèrent pas les requêtes par plages (Range),
+// or Safari (iPhone, iPad, Mac) refuse de lire un MP3 sans réponse 206. On découpe ici.
+app.get('/media/*', async (c) => {
+  if (!c.env.ASSETS) return c.notFound()
+  const asset = await c.env.ASSETS.fetch(new Request(new URL(c.req.path, c.req.url)))
+  if (!asset.ok) return asset
+  const headers = new Headers(asset.headers)
+  headers.set('Cache-Control', 'public, max-age=2592000')
+  headers.set('Accept-Ranges', 'bytes')
+  const range = /^bytes=(\d*)-(\d*)$/.exec(c.req.header('range') ?? '')
+  if (!range) return new Response(asset.body, { status: 200, headers })
+  const buf = await asset.arrayBuffer()
+  const size = buf.byteLength
+  let start = range[1] ? Number(range[1]) : size - Number(range[2])
+  let end = range[1] && range[2] ? Math.min(Number(range[2]), size - 1) : size - 1
+  if (!range[1] && !range[2]) start = 0
+  start = Math.max(0, start)
+  if (start >= size || start > end) {
+    headers.set('Content-Range', `bytes */${size}`)
+    headers.delete('Content-Length')
+    return new Response(null, { status: 416, headers })
+  }
+  headers.set('Content-Range', `bytes ${start}-${end}/${size}`)
+  headers.set('Content-Length', String(end - start + 1))
+  return new Response(buf.slice(start, end + 1), { status: 206, headers })
+})
+
 app.get('/robots.txt', (c) => c.text('User-agent: *\nDisallow: /espace-maries\n'))
 
 // ---------- Site public ----------
