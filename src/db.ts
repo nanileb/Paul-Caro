@@ -2,7 +2,7 @@ export type Env = { DB: D1Database; WEDDING_SLUG: string; ADMIN_PASSWORD: string
 
 export type Rsvp = {
   id: number; token: string; prenom: string; nom: string; email: string | null; groupe: string | null; absent: number
-  guests: number; events: string; companions: string | null; dietary: string | null; menu: string | null; message: string | null
+  guests: number; events: string; enfants: string; companions: string | null; dietary: string | null; menu: string | null; message: string | null
   created_at: string; updated_at: string
 }
 
@@ -21,8 +21,25 @@ export const eventsOf = (r: Pick<Rsvp, 'events'>): Record<string, number> => {
   }
 }
 
+// Enfants par événement (si le formulaire distingue adultes / enfants ; events contient alors les adultes)
+export const kidsOf = (r: Pick<Rsvp, 'enfants'>): Record<string, number> => {
+  try {
+    return JSON.parse(r.enfants || '{}')
+  } catch {
+    return {}
+  }
+}
+
+// « 2 adultes · 1 enfant »
+export const adultsKids = (a: number, k: number) =>
+  [`${a} adulte${a > 1 ? 's' : ''}`, k ? `${k} enfant${k > 1 ? 's' : ''}` : ''].filter(Boolean).join(' · ')
+
 // Personnes présentes : somme par événement en mode détaillé, sinon nombre total
-export const peopleOf = (r: Rsvp) => (r.absent ? 0 : r.guests || Math.max(0, ...Object.values(eventsOf(r))))
+export const peopleOf = (r: Rsvp) => {
+  if (r.absent) return 0
+  const kids = kidsOf(r)
+  return r.guests || Math.max(0, ...Object.entries(eventsOf(r)).map(([k, n]) => n + (kids[k] || 0)))
+}
 
 export async function listRsvps(db: D1Database) {
   return (await db.prepare('SELECT * FROM rsvps ORDER BY created_at DESC').all<Rsvp>()).results
@@ -32,7 +49,7 @@ export async function getRsvpByToken(db: D1Database, token: string) {
   return db.prepare('SELECT * FROM rsvps WHERE token = ?').bind(token).first<Rsvp>()
 }
 
-const COLS = ['prenom', 'nom', 'email', 'groupe', 'absent', 'guests', 'events', 'companions', 'dietary', 'menu', 'message'] as const
+const COLS = ['prenom', 'nom', 'email', 'groupe', 'absent', 'guests', 'events', 'enfants', 'companions', 'dietary', 'menu', 'message'] as const
 
 export async function saveRsvp(db: D1Database, input: RsvpInput, token?: string): Promise<Rsvp> {
   const values = COLS.map((k) => input[k])

@@ -313,7 +313,7 @@ function RsvpForm({ w, visible, k, existing, error }: { w: WeddingConfig; visibl
                 <label class="evt">
                   <input type="checkbox" name="evt" value={e.key} checked={!!ev[e.key]} />
                   <span class="grow"><b>{e.title}</b><small>{e.day} · {e.time}</small></span>
-                  <input type="number" name={`nb_${e.key}`} min={1} max={r.maxPersons} value={ev[e.key] || party} aria-label={`Nombre de personnes pour ${e.title}`} inputmode="numeric" />
+                  <input type="number" name={`nb_${e.key}`} min={1} max={r.maxPersons} value={ev[e.key] || party} aria-label={`Nombre de personnes pour ${e.title}`} inputmode="numeric" data-a data-cnt />
                 </label>
               ))}
             </div>

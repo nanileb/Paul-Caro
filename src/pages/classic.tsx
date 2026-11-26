@@ -3,7 +3,7 @@
 import type { Child } from 'hono/jsx'
 import { raw } from 'hono/html'
 import { eventLabel, type WeddingConfig, type WeddingEvent } from '../config'
-import { eventsOf, type Rsvp } from '../db'
+import { adultsKids, eventsOf, kidsOf, type Rsvp } from '../db'
 import { Svg } from '../icons'
 import { ampCss, fontsHref } from '../styles'
 import { siteScript } from '../client/site'
@@ -146,6 +146,11 @@ input:focus,select:focus,textarea:focus{outline:2px solid rgba(208,97,57,.45);ou
 .evts{display:grid;gap:.6rem}
 .evt .grow{flex:1;display:grid}.evt .grow b{font-family:var(--title);font-weight:500;font-size:1.15rem}.evt .grow small{font-size:.8rem;color:var(--olive-soft)}
 .evt input[type=number]{width:4.2rem;text-align:center;padding:.5rem;background:var(--card)}
+.recap li strong{white-space:nowrap;text-align:right}
+.ak{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.nbs{display:flex;gap:.6rem;flex:none}.nbs .nb{display:grid;gap:.2rem;justify-items:center}.nbs small{font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;color:var(--olive-soft)}
+.nbs input[type=number]{width:3.6rem}
+@media(max-width:560px){.evt:has(.nbs){flex-wrap:wrap}.evt .nbs{width:100%;padding-left:1.9rem;justify-content:flex-start;gap:1rem}.evt .nbs .nb{grid-auto-flow:column;align-items:center;gap:.5rem}}
 .hint{font-size:.85rem;color:var(--olive-soft)}
 .err{background:rgba(192,57,43,.08);border:1px solid rgba(192,57,43,.4);border-radius:8px;padding:.8rem 1rem;color:#7d2a1f}
 .send{width:100%;padding:.95rem 1.5rem;font-size:1rem}
@@ -478,7 +483,10 @@ export function RsvpPage({ w, k, visible, existing, error }: { w: WeddingConfig;
   const ev = existing ? eventsOf(existing) : {}
   const absent = existing ? !!existing.absent : false
   const editing = !!existing?.token
+  const kd = existing ? kidsOf(existing) : {}
   const party = Math.max(1, ...Object.values(ev))
+  const kidsParty = Math.max(0, ...Object.values(kd))
+  const ak = !!r.askChildren
   return (
     <Layout w={w} page="rsvp" k={k} title={`RSVP · ${w.seo.title}`}>
       <section class="phead" style="padding-bottom:2.5rem">
@@ -509,17 +517,35 @@ export function RsvpPage({ w, k, visible, existing, error }: { w: WeddingConfig;
               <div data-when-present><div style="display:grid;gap:1.4rem">
                 {r.perEvent ? (
                   <>
-                    <label class="f">Nombre de participants (vous inclus)
-                      <input type="number" name="participants" min={1} max={r.maxPersons} value={party} inputmode="numeric" data-participants />
-                    </label>
+                    {ak ? (
+                      <div class="ak">
+                        <label class="f">Adultes (vous inclus)
+                          <input type="number" name="participants" min={1} max={r.maxPersons} value={party} inputmode="numeric" data-participants />
+                        </label>
+                        <label class="f">Enfants
+                          <input type="number" name="enfants" min={0} max={r.maxPersons - 1} value={kidsParty} inputmode="numeric" data-kids />
+                        </label>
+                      </div>
+                    ) : (
+                      <label class="f">Nombre de participants (vous inclus)
+                        <input type="number" name="participants" min={1} max={r.maxPersons} value={party} inputmode="numeric" data-participants />
+                      </label>
+                    )}
                     <div class="lbl"><span>Moments <span class="req">*</span></span>
-                      <p class="hint" style="font-weight:400">Le nombre de personnes est reporté sur chaque moment et reste modifiable.</p>
+                      <p class="hint" style="font-weight:400">{ak ? 'Le nombre d’adultes et d’enfants est reporté sur chaque moment et reste modifiable.' : 'Le nombre de personnes est reporté sur chaque moment et reste modifiable.'}</p>
                       <div class="evts">
                         {visible.filter((e) => !e.noRsvp).map((e) => (
                           <label class="evt">
                             <input type="checkbox" name="evt" value={e.key} checked={!!ev[e.key]} />
                             <span class="grow"><b>{e.title}</b><small>{e.day} · {e.time}</small></span>
-                            <input type="number" name={`nb_${e.key}`} min={1} max={r.maxPersons} value={ev[e.key] || party} aria-label={`Nombre de personnes pour ${eventLabel(w, e)}`} inputmode="numeric" />
+                            {ak ? (
+                              <span class="nbs" data-cnt>
+                                <span class="nb"><small>Adultes</small><input type="number" name={`nb_${e.key}`} min={1} max={r.maxPersons} value={ev[e.key] || party} aria-label={`Nombre d’adultes pour ${eventLabel(w, e)}`} inputmode="numeric" data-a /></span>
+                                <span class="nb"><small>Enfants</small><input type="number" name={`nbk_${e.key}`} min={0} max={r.maxPersons - 1} value={ev[e.key] ? kd[e.key] ?? 0 : kidsParty} aria-label={`Nombre d’enfants pour ${eventLabel(w, e)}`} inputmode="numeric" data-k /></span>
+                              </span>
+                            ) : (
+                              <input type="number" name={`nb_${e.key}`} min={1} max={r.maxPersons} value={ev[e.key] || party} aria-label={`Nombre de personnes pour ${eventLabel(w, e)}`} inputmode="numeric" data-a data-cnt />
+                            )}
                           </label>
                         ))}
                       </div>
@@ -547,7 +573,7 @@ export function RsvpPage({ w, k, visible, existing, error }: { w: WeddingConfig;
 }
 
 export function ClassicThanks({ w, rsvp, events, k }: { w: WeddingConfig; rsvp: Rsvp; events: WeddingEvent[]; k: string }) {
-  const ev = eventsOf(rsvp)
+  const ev = eventsOf(rsvp), kd = kidsOf(rsvp)
   const q = k ? `k=${encodeURIComponent(k)}&` : ''
   return (
     <Layout w={w} page="rsvp" k={k} title={`Merci · ${w.seo.title}`}>
@@ -559,7 +585,7 @@ export function ClassicThanks({ w, rsvp, events, k }: { w: WeddingConfig; rsvp: 
             {rsvp.absent ? (
               <li>Vous ne pourrez malheureusement pas être présent(e). Vous nous manquerez !</li>
             ) : w.rsvp.perEvent ? (
-              events.filter((e) => ev[e.key]).map((e) => <li><span>{eventLabel(w, e)} · {e.time}</span><strong>{ev[e.key]} pers.</strong></li>)
+              events.filter((e) => ev[e.key]).map((e) => <li><span>{eventLabel(w, e)} · {e.time}</span><strong>{w.rsvp.askChildren ? adultsKids(ev[e.key], kd[e.key] || 0) : `${ev[e.key]} pers.`}</strong></li>)
             ) : (
               <li><span>Présence confirmée</span><strong>{rsvp.guests} pers.</strong></li>
             )}

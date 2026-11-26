@@ -1,9 +1,13 @@
 import type { Child } from 'hono/jsx'
 import { raw } from 'hono/html'
 import { eventLabel, groupLabel, type WeddingConfig } from '../config'
-import { eventsOf, normalizeName, peopleOf, type Invite, type Rsvp } from '../db'
+import { adultsKids, eventsOf, kidsOf, normalizeName, peopleOf, type Invite, type Rsvp } from '../db'
 import { adminCss, ampCss, fontsHref } from '../styles'
 import { adminScript } from '../client/admin'
+
+// Adultes / enfants d'une réponse pour un événement (enfants comptés seulement si le moment est coché)
+const kidsAt = (r: Rsvp, key: string) => (eventsOf(r)[key] ? kidsOf(r)[key] || 0 : 0)
+const short = (a: number, k: number) => (k ? `${a} ad. · ${k} enf.` : `${a} ad.`)
 
 const fmt = (iso: string | null) =>
   iso ? new Date(iso.replace(' ', 'T') + (iso.includes('Z') ? '' : 'Z')).toLocaleString('fr-FR', { dateStyle: 'short', timeStyle: 'short', timeZone: 'Europe/Paris' }) : '—'
@@ -55,11 +59,12 @@ export function Dashboard(p: Props) {
   const present = rsvps.filter((r) => !r.absent)
   const perEvent = w.rsvp.perEvent
   const rsvpEvents = w.events.filter((e) => !e.noRsvp)
-  const eventTotals = rsvpEvents.map((e) => ({
-    e,
-    people: present.reduce((n, r) => n + (eventsOf(r)[e.key] || 0), 0),
-    who: present.filter((r) => eventsOf(r)[e.key]).sort((a, b) => a.nom.localeCompare(b.nom, 'fr')),
-  }))
+  const ak = !!w.rsvp.askChildren
+  const eventTotals = rsvpEvents.map((e) => {
+    const adults = present.reduce((n, r) => n + (eventsOf(r)[e.key] || 0), 0)
+    const kids = present.reduce((n, r) => n + kidsAt(r, e.key), 0)
+    return { e, adults, kids, people: adults + kids, who: present.filter((r) => eventsOf(r)[e.key]).sort((a, b) => a.nom.localeCompare(b.nom, 'fr')) }
+  })
   const tabs: [Tab, string, boolean][] = [
     ['reponses', 'Réponses', true],
     ['participants', 'Qui vient à quoi', perEvent],
@@ -87,7 +92,7 @@ export function Dashboard(p: Props) {
           <div class="kpi"><b>{rsvps.length}</b><span>réponses</span></div>
           <div class="kpi"><b>{rsvps.length - present.length}</b><span>absents</span></div>
           {perEvent
-            ? eventTotals.map((t) => <div class="kpi"><b>{t.people}</b><span>{eventLabel(w, t.e)} (pers.)</span></div>)
+            ? eventTotals.map((t) => <div class="kpi"><b>{t.people}</b><span>{eventLabel(w, t.e)} (pers.)</span>{ak && t.people > 0 && <em>{adultsKids(t.adults, t.kids)}</em>}</div>)
             : <div class="kpi"><b>{present.reduce((n, r) => n + peopleOf(r), 0)}</b><span>personnes attendues</span></div>}
         </div>
         <nav class="tabs">
@@ -98,8 +103,8 @@ export function Dashboard(p: Props) {
           <div class="cols">
             {eventTotals.map((t) => (
               <div class="box">
-                <h3>{eventLabel(w, t.e)} <span class="pill">{t.people} pers.</span></h3>
-                {t.who.length ? <ul class="list">{t.who.map((r) => <li><span>{r.prenom} {r.nom}</span><b>{eventsOf(r)[t.e.key]}</b></li>)}</ul> : <p class="muted">Personne pour le moment.</p>}
+                <h3>{eventLabel(w, t.e)} <span class="pill">{t.people} pers.</span>{ak && t.people > 0 && <> <span class="pill">{adultsKids(t.adults, t.kids)}</span></>}</h3>
+                {t.who.length ? <ul class="list">{t.who.map((r) => <li><span>{r.prenom} {r.nom}</span><b>{ak ? short(eventsOf(r)[t.e.key], kidsAt(r, t.e.key)) : eventsOf(r)[t.e.key]}</b></li>)}</ul> : <p class="muted">Personne pour le moment.</p>}
               </div>
             ))}
           </div>
@@ -190,7 +195,7 @@ function Responses({ w, rsvps, invites, q, groupe, evt }: Props) {
                 {w.profiles && <td data-label="Groupe"><span class="pill">{groupLabel(w, r.groupe)}</span></td>}
                 <td class="c" data-label="Présent">{r.absent ? <span class="no">Non</span> : <span class="yes">Oui</span>}</td>
                 {w.rsvp.perEvent
-                  ? rsvpEvents.map((e) => <td class="c" data-label={eventLabel(w, e)}>{r.absent ? '—' : ev[e.key] ? <span class="yes">✓ {ev[e.key]}</span> : <span class="muted">✗</span>}</td>)
+                  ? rsvpEvents.map((e) => <td class="c" data-label={eventLabel(w, e)}>{r.absent ? '—' : ev[e.key] ? <span class="yes">✓ {w.rsvp.askChildren ? short(ev[e.key], kidsAt(r, e.key)) : ev[e.key]}</span> : <span class="muted">✗</span>}</td>)
                   : <td class="c" data-label="Personnes">{r.absent ? '—' : r.guests}</td>}
                 {w.rsvp.askCompanions && <td data-label="Accompagnants">{r.companions || '—'}</td>}
                 <td data-label="Restrictions">{[r.menu, r.dietary].filter(Boolean).join(' · ') || '—'}</td>
