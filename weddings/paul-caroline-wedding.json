@@ -37,7 +37,7 @@
       "key": "ceremonie",
       "title": "Cérémonie laïque",
       "day": "Samedi 15 mai 2027",
-      "time": "16h30",
+      "time": "16h00",
       "icon": "heart",
       "note": "Échange de nos vœux en plein air, entourés de nos proches, au cœur du domaine."
     },
@@ -54,7 +54,7 @@
       "key": "soiree_samedi",
       "title": "Soirée",
       "day": "Samedi 15 mai 2027",
-      "time": "21h - 05h",
+      "time": "20h30 - 05h",
       "icon": "music",
       "note": "Dîner, danse et fête."
     },
@@ -62,7 +62,7 @@
       "key": "repas_dimanche",
       "title": "Repas",
       "day": "Dimanche 16 mai 2027",
-      "time": "12h30",
+      "time": "12h00",
       "icon": "sun",
       "note": "Un repas convivial pour prolonger la fête en douceur."
     },
@@ -85,8 +85,7 @@
   ],
   "programme": {
     "title": "Deux jours de fête",
-    "intro": "Voici le déroulé provisoire de notre weekend de mariage. Les horaires sont susceptibles d'évoluer, nous vous tiendrons informés.",
-    "provisional": true
+    "intro": "Voici le déroulé de notre weekend de mariage."
   },
   "venues": [
     {
@@ -101,7 +100,7 @@
     {
       "icon": "car",
       "title": "En voiture",
-      "text": "Le Mas Aubrilha est accessible en voiture depuis Clermont-l'Hérault. Un parking est prévu sur place pour les invités."
+      "text": "Le Mas Aubrilha est accessible en voiture. Un parking est prévu sur place pour les invités."
     },
     {
       "icon": "parking",
@@ -111,7 +110,7 @@
     {
       "icon": "train",
       "title": "En train",
-      "text": "Gare de Montpellier Saint-Roch ou gare de Montpellier Sud de France (TGV), à environ 45 min du domaine."
+      "text": "Gare de Montpellier Saint-Roch ou gare de Montpellier Sud de France (TGV), à environ 45 min en voiture du domaine."
     },
     {
       "icon": "plane",
@@ -186,8 +185,8 @@
           "text": "À 15 minutes à pied ou 3 minutes en voiture du Mas Aubrilha."
         },
         {
-          "icon": "phone",
-          "text": "Pour réserver, les appeler au 04 67 88 57 81. Mentionnez le mariage Caroline & Paul lors de votre réservation."
+          "icon": "globe",
+          "text": "Pour réserver, rendez-vous directement sur leur site https://lesarac.fr/ (pas de réservation par téléphone)."
         }
       ],
       "url": "https://lesarac.fr/"
@@ -195,14 +194,6 @@
   ],
   "hotelsNote": "D'autres hébergements (gîtes, chambres d'hôtes) sont disponibles dans le secteur — n'hésitez pas à nous écrire pour des recommandations.",
   "faq": [
-    {
-      "q": "Comment réserver ma chambre ?",
-      "a": "Contactez directement l'un des deux hôtels en mentionnant notre mariage pour bénéficier de conditions préférentielles, dans la limite des disponibilités."
-    },
-    {
-      "q": "Puis-je venir avec mes enfants ?",
-      "a": "Les enfants sont les bienvenus, mais sachez qu'aucune garde ni nounou ne sera assurée sur place. Merci de prévoir vous-même leur accompagnement."
-    },
     {
       "q": "Jusqu'à quand puis-je répondre ?",
       "a": "Merci de confirmer votre présence avant le 1er mars 2027 via la page RSVP, afin que nous puissions finaliser l'organisation."
@@ -236,7 +227,6 @@
     "banner": {
       "image": "/oliviers.jpg",
       "text": "Entourés de nos familles et de nos amis, pour le plus beau jour de notre vie"
-    },
-    "scheduleNote": "Les horaires restent à confirmer. Vous retrouverez ici même la version définitive quelques semaines avant le jour J."
+    }
   }
 }
