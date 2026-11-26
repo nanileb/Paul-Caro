@@ -24,11 +24,13 @@
       "vars": { "WEDDING_SLUG": "paul-caroline-wedding" },
       "d1_databases": [{ "binding": "DB", "database_name": "paul-caroline-wedding", "database_id": "06b222b9-b997-46ea-b77b-58902e01fad4", "migrations_dir": "migrations" }],
       "assets": { "directory": "./public/paul-caroline-wedding" },
-      // Domaine définitif (www redirigé vers pauletcaroline.com par le Worker)
-      "routes": [
-        { "pattern": "pauletcaroline.com", "zone_name": "pauletcaroline.com", "custom_domain": true },
-        { "pattern": "www.pauletcaroline.com", "zone_name": "pauletcaroline.com", "custom_domain": true }
-      ]
+      // Domaine définitif pauletcaroline.com : acheté sur un autre compte Cloudflare, servi pour l'instant
+      // par un Worker relais dans ce compte-là. Une fois le domaine déplacé dans ce compte (possible
+      // à partir du 6 décembre 2026), remettre :
+      // "routes": [
+      //   { "pattern": "pauletcaroline.com", "custom_domain": true },
+      //   { "pattern": "www.pauletcaroline.com", "custom_domain": true }
+      // ]
     },
     // Ethan & Julia
     "ethan-julia": {
