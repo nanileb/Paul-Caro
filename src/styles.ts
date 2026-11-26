@@ -120,7 +120,8 @@ input:focus,select:focus,textarea:focus{outline:2px solid color-mix(in srgb,var(
 footer{text-align:center;padding:3.5rem 1rem 6rem;color:var(--soft)}
 footer .names{font-family:var(--script);font-size:2.4rem;color:var(--text)}
 footer a{font-size:.75rem;opacity:.7}
-.music{position:fixed;right:1.1rem;bottom:calc(1.1rem + env(safe-area-inset-bottom));z-index:60;width:3rem;height:3rem;border-radius:50%;border:1px solid var(--line);
+.music[hidden]{display:none}
+.music{position:fixed;right:calc(1.1rem + env(safe-area-inset-right));bottom:calc(1.1rem + env(safe-area-inset-bottom));z-index:1000;width:3rem;height:3rem;border-radius:50%;border:1px solid var(--line);
   background:color-mix(in srgb,var(--bg) 80%,transparent);backdrop-filter:blur(8px);color:var(--text);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 6px 20px rgba(0,0,0,.2)}
 .reveal{opacity:0;transform:translateY(24px);transition:opacity .9s ease,transform .9s ease}.reveal.in{opacity:1;transform:none}
 @media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none}html{scroll-behavior:auto}}

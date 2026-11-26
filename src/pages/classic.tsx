@@ -183,6 +183,12 @@ footer .adm:hover{color:var(--terra-deep)}
 @media(prefers-reduced-motion:reduce){.splash .bg{animation:none}}
 .reveal{opacity:0;transform:translateY(18px);transition:opacity .8s ease,transform .8s ease}.reveal.in{opacity:1;transform:none}
 @media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none}}
+/* Bouton musique : flottant, commun à toutes les pages */
+.music{position:fixed;right:calc(1rem + env(safe-area-inset-right));bottom:calc(1rem + env(safe-area-inset-bottom));z-index:1000;width:3.1rem;height:3.1rem;padding:0;border-radius:50%;border:1px solid rgba(208,97,57,.45);background:rgba(250,248,245,.92);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:var(--terra-deep);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 6px 18px rgba(42,72,30,.16);transition:background .2s,border-color .2s,transform .2s}
+.music:hover{background:#fff;border-color:var(--terra)}.music:active{transform:scale(.94)}
+.music:focus-visible{outline:2px solid var(--olive-soft);outline-offset:3px}
+.music[hidden],.music [hidden]{display:none}.music span{display:flex}
+.music.off{color:var(--olive-soft);border-color:var(--mist)}
 `
 
 const Names = ({ w }: { w: WeddingConfig }) => (
@@ -209,7 +215,7 @@ const mapsUrl = (q: string) => ({
 
 const accessIcon: Record<string, string> = { car: 'car', parking: 'parking', train: 'train', plane: 'plane' }
 
-function Shell({ w, title, children, bare }: { w: WeddingConfig; title: string; children: Child; bare?: boolean }) {
+function Shell({ w, title, children }: { w: WeddingConfig; title: string; children: Child }) {
   return (
     <html lang="fr">
       <head>
@@ -230,9 +236,15 @@ function Shell({ w, title, children, bare }: { w: WeddingConfig; title: string; 
         <link rel="stylesheet" href={fontsHref(w.theme)} />
         <style>{raw(css + ampCss(w.theme))}</style>
       </head>
-      <body>
+      <body data-soft-nav>
         {children}
-        {!bare && <script>{raw(siteScript)}</script>}
+        {/* Hors du contenu des pages : conservé d'une page à l'autre, la musique ne s'interrompt pas */}
+        {!!w.media.music?.length && (
+          <button class="music" type="button" data-music={JSON.stringify(w.media.music)} aria-label="Activer la musique" hidden>
+            <span data-on hidden><Svg name="volume" /></span><span data-off><Svg name="mute" /></span>
+          </button>
+        )}
+        <script>{raw(siteScript)}</script>
       </body>
     </html>
   )
@@ -267,7 +279,7 @@ function Layout({ w, page, k, title, children }: { w: WeddingConfig; page?: Clas
 export function Splash({ w, k }: { w: WeddingConfig; k: string }) {
   const c = w.classic ?? {}
   return (
-    <Shell w={w} title={w.seo.title} bare>
+    <Shell w={w} title={w.seo.title}>
       <div class={`splash${w.splash.image ? ' photo' : ''}`}>
         {w.splash.image && <img class="bg" src={w.splash.image} alt="" aria-hidden="true" fetchpriority="high" style={w.splash.imagePosition ? `object-position:${w.splash.imagePosition}` : undefined} />}
         {w.splash.image && <div class="voile" aria-hidden="true"></div>}
@@ -276,7 +288,7 @@ export function Splash({ w, k }: { w: WeddingConfig; k: string }) {
         <hr />
         <p class="date">{c.weddingDay ?? w.dateLabel}</p>
         <p class="place">{c.venueLine ?? w.place}</p>
-        <a class="enter" href={`/accueil${k ? `?k=${encodeURIComponent(k)}` : ''}`}>Entrer <Svg name="chevron" size={18} /></a>
+        <a class="enter" data-enter href={`/accueil${k ? `?k=${encodeURIComponent(k)}` : ''}`}>Entrer <Svg name="chevron" size={18} /></a>
       </div>
     </Shell>
   )

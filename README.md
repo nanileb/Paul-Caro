@@ -4,7 +4,8 @@ Un modèle unique pour tous les sites de mariage. Chaque couple = un fichier `we
 + un Worker Cloudflare + une base D1. Aucun service tiers (plus de Base44).
 
 ## Fonctionnalités
-**Site invités** : écran d'entrée « Entrer » (vidéo ou image), musique d'ambiance (une ou plusieurs pistes, bouton couper),
+**Site invités** : écran d'entrée « Entrer » (vidéo ou image), musique d'ambiance lancée par « Entrer » (une ou plusieurs pistes,
+fichier dans `public/<slug>/media/`, bouton couper flottant ; en multi-pages, navigation sans rechargement pour que la musique continue),
 fond image/vidéo (version mobile possible), compte à rebours, notre histoire / citation, programme multi-jours avec icônes
 (mention « provisoire »), lieux avec carte + liens Google Maps / Waze / Apple Plans, accès (voiture, train, avion, parking),
 dress code avec pastilles de couleur, infos (enfants, date limite…), hôtels, FAQ, RSVP, aperçu WhatsApp/réseaux (Open Graph).
