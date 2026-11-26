@@ -23,8 +23,12 @@
       "name": "paul-caroline-wedding",
       "vars": { "WEDDING_SLUG": "paul-caroline-wedding" },
       "d1_databases": [{ "binding": "DB", "database_name": "paul-caroline-wedding", "database_id": "06b222b9-b997-46ea-b77b-58902e01fad4", "migrations_dir": "migrations" }],
-      "assets": { "directory": "./public/paul-caroline-wedding" }
-      // Domaine payant plus tard : "routes": [{ "pattern": "exemple.fr", "custom_domain": true }]
+      "assets": { "directory": "./public/paul-caroline-wedding" },
+      // Domaine définitif (www redirigé vers pauletcaroline.com par le Worker)
+      "routes": [
+        { "pattern": "pauletcaroline.com", "custom_domain": true },
+        { "pattern": "www.pauletcaroline.com", "custom_domain": true }
+      ]
     },
     // Ethan & Julia
     "ethan-julia": {
