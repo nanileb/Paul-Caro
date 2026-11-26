@@ -186,9 +186,14 @@ const Names = ({ w }: { w: WeddingConfig }) => (
   </>
 )
 
-// Numéros de téléphone français cliquables
+// Numéros de téléphone français et adresses web cliquables
 const withPhones = (s: string) =>
-  s.split(/((?:\+33\s?|0)[1-9](?:[\s.]?\d{2}){4})/).map((part, i) => (i % 2 ? <a href={`tel:${part.replace(/[\s.]/g, '')}`}>{part}</a> : part))
+  s.split(/((?:\+33\s?|0)[1-9](?:[\s.]?\d{2}){4}|https?:\/\/[^\s)]+)/).map((part, i) =>
+    i % 2 === 0
+      ? part
+      : /^https?:/.test(part)
+        ? <a href={part} target="_blank" rel="noopener">{part.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')}</a>
+        : <a href={`tel:${part.replace(/[\s.]/g, '')}`}>{part}</a>)
 
 const mapsUrl = (q: string) => ({
   google: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(q)}`,
